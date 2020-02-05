@@ -61,7 +61,7 @@ public class SmsAdminController {
     public CommonResult login(@Validated @RequestBody AdminLoginVo adminLoginVo){
         String token= smsAdminService.login(adminLoginVo);
         if(StringUtils.isEmpty(token)){
-            return CommonResult.failed("登陆失败");
+            return CommonResult.failed("账号密码不正确");
         }
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("token", token);
