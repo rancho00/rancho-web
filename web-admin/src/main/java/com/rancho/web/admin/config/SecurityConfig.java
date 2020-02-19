@@ -93,12 +93,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-//    public static void main(String[] args) {
-//        String pass = "123456";
-//        BCryptPasswordEncoder encode = new BCryptPasswordEncoder();
-//        String hashPass = encode.encode(pass);
-//        System.out.println(hashPass);
-//    }
+    public static void main(String[] args) {
+        String pass = "rancho123456";
+        BCryptPasswordEncoder encode = new BCryptPasswordEncoder();
+        String hashPass = encode.encode(pass);
+        System.out.println(hashPass);
+    }
 
     @Bean
     public UserDetailsService userDetailsService() {
