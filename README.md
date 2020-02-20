@@ -4,6 +4,16 @@
 # 演示地址
   http://123.57.164.79:8089/admin-web
 # 功能预览
+### 登陆页面
+![](https://github.com/rancho00/rancho-web/blob/master/document/resource/login.png)
+### 仪表盘页面
+![](https://github.com/rancho00/rancho-web/blob/master/document/resource/dashboard.png)
+### Icons页面
+![](https://github.com/rancho00/rancho-web/blob/master/document/resource/icons.jpg)
+### 管理员页面
+![](https://github.com/rancho00/rancho-web/blob/master/document/resource/admin.png)
+### 角色页面
+![](https://github.com/rancho00/rancho-web/blob/master/document/resource/role.png)
 # 技术选型
 ### 后端
 |技术|说明|
@@ -32,4 +42,4 @@
 # 联系我
   rancho-web项目全套学习教程连载中，关注公众号第一时间获取。<br>
   如果想加入QQ群交流，公众号回复"加群"即可<br>
-  ![](https://github.com/rancho00/rancho-web/blob/master/document/resource/login.png)
+  ![](https://github.com/rancho00/rancho-web/blob/master/document/resource/8cm.jpg)
