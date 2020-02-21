@@ -41,7 +41,6 @@
 ### Spring Boot教程
 * [Spring Boot自动配置starter原理](https://mp.weixin.qq.com/s/P-I21C9w3BSOZe982ocepg)
 ### Spring Boot & Security教程
-Spring Security自定义用户认证
 * [Spring Boot中开启Spring Security](https://mrbird.cc/Spring-Boot&Spring-Security.html)
 * [Spring Security自定义用户认证](https://mrbird.cc/Spring-Security-Authentication.html)
 * [Spring Security添加图形验证码](https://mrbird.cc/Spring-Security-ValidateCode.html)
