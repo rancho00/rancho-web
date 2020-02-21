@@ -50,6 +50,8 @@
 * [Spring Security Session管理](https://mrbird.cc/Spring-Security-Session-Manage.html)
 * [Spring Security退出登录](https://mrbird.cc/Spring-Security-logout.html)
 * [Spring Security权限控制](https://mrbird.cc/Spring-Security-Permission.html)
+### Hibernate
+* [hibernate-validation](https://blog.csdn.net/weixin_43549578/article/details/90242559l)
 ### 参考项目
 * [mall](https://github.com/macrozheng/mall)
 * [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)
