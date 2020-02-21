@@ -52,6 +52,10 @@
 * [Spring Security权限控制](https://mrbird.cc/Spring-Security-Permission.html)
 ### Hibernate
 * [hibernate-validation](https://blog.csdn.net/weixin_43549578/article/details/90242559l)
+### JWT(JSON Web Token)
+* [分布式系统--感性认识JWT](https://blog.tengshe789.tech/2018/12/02/%E6%84%9F%E6%80%A7%E8%AE%A4%E8%AF%86jwt/)
+### Druid
+* [Druid-常见问题](https://github.com/alibaba/druid/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
 ### 参考项目
 * [mall](https://github.com/macrozheng/mall)
 * [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)
