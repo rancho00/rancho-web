@@ -40,6 +40,7 @@
 # 相关推荐
 ### Spring Boot教程
 * [Spring Boot自动配置starter原理](https://mp.weixin.qq.com/s/P-I21C9w3BSOZe982ocepg)
+* [Spring Boot之自定义starter](https://mp.weixin.qq.com/s/FRCv6_-5Q0DyjFr-u9MQQw)
 ### Spring Boot & Security教程
 * [Spring Boot中开启Spring Security](https://mrbird.cc/Spring-Boot&Spring-Security.html)
 * [Spring Security自定义用户认证](https://mrbird.cc/Spring-Security-Authentication.html)
@@ -49,6 +50,9 @@
 * [Spring Security Session管理](https://mrbird.cc/Spring-Security-Session-Manage.html)
 * [Spring Security退出登录](https://mrbird.cc/Spring-Security-logout.html)
 * [Spring Security权限控制](https://mrbird.cc/Spring-Security-Permission.html)
+### 参考项目
+* [mall](https://github.com/macrozheng/mall)
+* [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)
 # 有问题欢迎issues
 # 联系我
   rancho-web项目全套学习教程连载中，关注公众号第一时间获取。<br>
