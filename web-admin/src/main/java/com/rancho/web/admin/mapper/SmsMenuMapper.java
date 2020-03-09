@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface SmsMenuMapper extends BaseMapper {
+public interface SmsMenuMapper extends BaseMapper<SmsMenu,Integer> {
 
     List<SmsMenu> listRoleMenus(@Param("roleId") Integer roleId, @Param("type") Integer type, @Param("pid") Integer pid);
 

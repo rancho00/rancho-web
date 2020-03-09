@@ -80,10 +80,9 @@ public class SmsAdminServiceImpl extends BaseService implements SmsAdminService 
     }
 
     @Override
-    public PageInfo<SmsAdmin> pageInfo(Page page) {
+    public List<SmsAdmin> list(Page page) {
         setPage(page);
-        PageInfo pageInfo=PageInfo.convertPage(adminMapper.list(null));
-        return pageInfo;
+        return adminMapper.list(null);
     }
 
     @Override

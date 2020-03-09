@@ -1,6 +1,8 @@
 package com.rancho.web.admin.controller;
 
+import com.rancho.web.admin.domain.SmsMenu;
 import com.rancho.web.admin.domain.SmsRole;
+import com.rancho.web.admin.service.SmsMenuService;
 import com.rancho.web.admin.service.SmsRoleService;
 import com.rancho.web.common.page.Page;
 import com.rancho.web.common.page.PageInfo;
@@ -25,27 +27,24 @@ public class SmsRoleController {
     private SmsRoleService smsRoleService;
 
     @ApiOperation(value = "角色列表")
-    @GetMapping("/pageInfo")
+    @GetMapping
     @ResponseBody
     @PreAuthorize("hasAuthority('role:list')")
-    public  CommonResult<PageInfo<SmsRole>> pageInfo(SmsRole smsRole, Page page) {
-        PageInfo<SmsRole> pageInfo= smsRoleService.pageInfo(smsRole,page);
+    public  CommonResult<PageInfo<SmsRole>> list(SmsRole smsRole, Page page) {
+        PageInfo<SmsRole> pageInfo= PageInfo.convertPage(smsRoleService.list(smsRole,page));
         return CommonResult.success(pageInfo);
     }
 
     @ApiOperation(value = "角色列表")
-    @GetMapping("/list")
+    @GetMapping("/simpleList")
     @ResponseBody
     @PreAuthorize("hasAuthority('role:list')")
-    public  CommonResult<List<SmsRole>> list() {
-        SmsRole smsRole =new SmsRole();
-        smsRole.setStatus(1);
-        List<SmsRole> list= smsRoleService.list(smsRole);
-        return CommonResult.success(list);
+    public  CommonResult<List<SmsRole>> getRoles(SmsRole smsRole) {
+        return CommonResult.success(smsRoleService.list(smsRole,null));
     }
 
     @ApiOperation(value = "添加角色")
-    @PostMapping("/save")
+    @PostMapping
     @ResponseBody
     @PreAuthorize("hasAuthority('role:save')")
     public CommonResult save(@Validated @RequestBody SmsRole smsRole) {
@@ -54,24 +53,28 @@ public class SmsRoleController {
     }
 
     @ApiOperation(value = "获取角色详情")
-    @GetMapping("{id}/getById")
+    @GetMapping("/{id}")
     @ResponseBody
+    @PreAuthorize("hasAuthority('role:detail')")
     public  CommonResult<SmsRole> getById(@PathVariable Integer id) {
         SmsRole smsRole = smsRoleService.getById(id);
         return CommonResult.success(smsRole);
     }
 
     @ApiOperation(value = "更新角色")
-    @PutMapping("{id}/update")
+    @PutMapping("/{id}")
     @ResponseBody
     @PreAuthorize("hasAuthority('role:update')")
-    public CommonResult update(@Validated @RequestBody SmsRole smsRole, @PathVariable String id) {
-        smsRoleService.update(smsRole);
+    public CommonResult update(@PathVariable Integer id, @Validated @RequestBody SmsRole smsRole) {
+        if(id==null || !id.equals(smsRole.getId())){
+            return CommonResult.failed("无效id");
+        }
+        smsRoleService.update(id,smsRole);
         return CommonResult.success();
     }
 
     @ApiOperation(value = "删除角色")
-    @DeleteMapping("{id}/delete")
+    @DeleteMapping("/{id}")
     @ResponseBody
     @PreAuthorize("hasAuthority('role:delete')")
     public CommonResult delete(@PathVariable Integer id) {

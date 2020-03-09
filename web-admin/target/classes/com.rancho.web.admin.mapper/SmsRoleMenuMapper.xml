@@ -15,4 +15,8 @@
     <delete id="deleteByRoleId">
         delete from sms_role_menu where role_id=#{roleId}
     </delete>
+
+    <select id="countByMenuId" resultType="int">
+        select count(0) from sms_role_menu where menu_id=#{menuId}
+    </select>
 </mapper>

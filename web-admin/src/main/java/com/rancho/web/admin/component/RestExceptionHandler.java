@@ -63,15 +63,4 @@ public class RestExceptionHandler {
         return CommonResult.unauthorized(null);
     }
 
-    /**
-     * 处理Exception异常
-     * @TODO
-     * @param e
-     * @return
-     */
-//    @ExceptionHandler(Exception.class)
-//    public CommonResult handleException(Exception e){
-//        e.printStackTrace();
-//        return CommonResult.failed();
-//    }
 }

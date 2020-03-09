@@ -7,4 +7,6 @@ import org.apache.ibatis.annotations.Param;
 public interface SmsRoleMenuMapper extends BaseMapper<SmsRoleMenu,Integer> {
 
     void deleteByRoleId(@Param("roleId")Integer roleId);
+
+    int countByMenuId(@Param("menuId")Integer menuId);
 }

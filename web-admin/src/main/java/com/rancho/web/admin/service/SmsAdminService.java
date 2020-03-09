@@ -18,7 +18,7 @@ public interface SmsAdminService {
 
     AdminPasswordDto getAdminPasswordDto(String username);
 
-    PageInfo<SmsAdmin> pageInfo(Page page);
+    List<SmsAdmin> list(Page page);
 
     void save(AdminPasswordDto adminPasswordDto, List<Integer> roleIdList);
 

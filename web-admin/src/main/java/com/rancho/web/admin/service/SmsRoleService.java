@@ -9,9 +9,7 @@ import java.util.List;
 
 public interface SmsRoleService {
 
-    PageInfo pageInfo(SmsRole smsRole, Page page);
-
-    List<SmsRole> list(SmsRole smsRole);
+    List<SmsRole> list(SmsRole smsRole, Page page);
 
     @Transactional
     void save(SmsRole smsRole);
@@ -19,7 +17,7 @@ public interface SmsRoleService {
     SmsRole getById(Integer id);
 
     @Transactional
-    void update(SmsRole smsRole);
+    void update(Integer id,SmsRole smsRole);
 
     void delete(Integer id);
 

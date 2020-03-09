@@ -78,16 +78,16 @@ public class SmsAdminController {
         List<SmsRole> smsRoleList;
         //加载角色
         if("admin".equals(smsAdmin.getUsername())){
-            smsRoleList = smsRoleService.list(new SmsRole());
+            smsRoleList = smsRoleService.list(null,null);
         }else {
             smsRoleList = smsRoleService.listByAdminId(smsAdmin.getId());
         }
         //加载管理员菜单
         List<SmsMenu> smsMenuList;
         if("admin".equals(smsAdmin.getUsername())){
-            smsMenuList = smsMenuService.list();
+            smsMenuList = smsMenuService.listHierarchy();
         }else{
-            smsMenuList = smsMenuService.listAdminMenus(smsAdmin.getId());
+            smsMenuList = smsMenuService.listAdminHierarchyMenus(smsAdmin.getId());
         }
         Map<String, Object> data = new HashMap<>();
         data.put("admin", smsAdmin);
@@ -104,16 +104,16 @@ public class SmsAdminController {
     }
 
     @ApiOperation("管理员列表")
-    @GetMapping("/pageInfo")
+    @GetMapping
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:list')")
-    public CommonResult<PageInfo<SmsAdmin>> pageInfo(Page page) {
-        PageInfo<SmsAdmin> pageInfo = smsAdminService.pageInfo(page);
+    public CommonResult<PageInfo<SmsAdmin>> list(Page page) {
+        PageInfo<SmsAdmin> pageInfo = PageInfo.convertPage(smsAdminService.list(page));
         return CommonResult.success(pageInfo);
     }
 
     @ApiOperation(value = "添加管理员")
-    @PostMapping("/save")
+    @PostMapping
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:save')")
     public CommonResult save(@Validated @RequestBody AdminVo adminVo) {
@@ -126,9 +126,9 @@ public class SmsAdminController {
     }
 
     @ApiOperation(value = "获取管理员详情")
-    @GetMapping("{id}/getById")
+    @GetMapping("/{id}")
     @ResponseBody
-//    @PreAuthorize("hasAuthority('admin:getById')")
+    @PreAuthorize("hasAuthority('admin:detail')")
     public  CommonResult<AdminVo> getById(@PathVariable Integer id) {
         SmsAdmin smsAdmin = smsAdminService.getById(id);
         //查询角色
@@ -149,7 +149,7 @@ public class SmsAdminController {
     }
 
     @ApiOperation(value = "更新管理员")
-    @PutMapping("{id}/update")
+    @PutMapping("/{id}")
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:update')")
     public CommonResult update(@PathVariable Integer id, @Validated @RequestBody AdminVo adminVo) {
@@ -163,13 +163,12 @@ public class SmsAdminController {
     }
 
     @ApiOperation(value = "更新管理员状态")
-    @PutMapping("{id}/updateStatus/{status}")
+    @PutMapping("/{id}/status")
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:updateStatus')")
-    public CommonResult updateStatus(@PathVariable Integer id,@PathVariable Integer status) {
+    public CommonResult updateStatus(@PathVariable Integer id,Integer status) {
         smsAdminService.updateStatus(id,status);
         return CommonResult.success();
     }
-
 
 }

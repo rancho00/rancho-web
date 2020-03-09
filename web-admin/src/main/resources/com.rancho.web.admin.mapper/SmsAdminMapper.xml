@@ -24,7 +24,7 @@
         </where>
     </select>
 
-    <insert id="save" parameterType="com.rancho.web.admin.domain.dto.AdminPasswordDto" keyProperty="id" useGeneratedKeys="true">
+    <insert id="saveAdminPasswordDto" parameterType="com.rancho.web.admin.domain.dto.AdminPasswordDto" keyProperty="id" useGeneratedKeys="true">
         insert into sms_admin (username,nickname,create_time,status,password) values (#{username},#{nickname},now(),#{status},#{password})
     </insert>
 

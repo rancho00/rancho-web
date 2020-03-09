@@ -38,14 +38,10 @@ public class SmsRoleServiceImpl extends BaseService implements SmsRoleService {
         return smsRoleMapper.listByAdminId(adminId);
     }
 
-    @Override
-    public PageInfo pageInfo(SmsRole smsRole, Page page) {
-        setPage(page);
-        return PageInfo.convertPage(smsRoleMapper.list(smsRole));
-    }
 
     @Override
-    public List<SmsRole> list(SmsRole smsRole) {
+    public List<SmsRole> list(SmsRole smsRole, Page page) {
+        setPage(page);
         return smsRoleMapper.list(smsRole);
     }
 
@@ -80,12 +76,12 @@ public class SmsRoleServiceImpl extends BaseService implements SmsRoleService {
     public SmsRole getById(Integer id) {
         SmsRole smsRole = smsRoleMapper.getById(id);
         //加载权限菜单
-        smsRole.setSmsMenuList(smsMenuService.listRoleMenus(id));
+        smsRole.setSmsMenuList(smsMenuService.listRoleHierarchyMenus(id));
         return smsRole;
     }
 
     @Override
-    public void update(SmsRole smsRole) {
+    public void update(Integer id,SmsRole smsRole) {
         smsRoleMapper.update(smsRole);
         //删除角色菜单权限
         smsRoleMenuMapper.deleteByRoleId(smsRole.getId());

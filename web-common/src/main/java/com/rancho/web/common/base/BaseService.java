@@ -13,6 +13,9 @@ public abstract class BaseService {
      * @param page
      */
     protected void setPage(Page page) {
+        if(page==null){
+            return;
+        }
         if (StringUtils.isEmpty(page.getOrderBy())) {
             PageHelper.startPage(page.getPageNumber(), page.getPageSize(), page.isCount());
         } else {
