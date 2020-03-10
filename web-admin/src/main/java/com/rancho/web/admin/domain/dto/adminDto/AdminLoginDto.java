@@ -1,14 +1,16 @@
-package com.rancho.web.admin.domain.vo;
+package com.rancho.web.admin.domain.dto.adminDto;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
-@Setter
-@Getter
-public class AdminLoginVo {
+@Data
+@NotNull(message = "登陆信息不能为空")
+public class AdminLoginDto {
 
     @ApiModelProperty(value = "用户名")
     @NotBlank(message = "用户名不能为空")

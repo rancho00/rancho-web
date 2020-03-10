@@ -5,15 +5,12 @@
         <id column="id" jdbcType="INTEGER" property="id" />
         <result column="username" jdbcType="VARCHAR" property="username" />
         <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
         <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="status" jdbcType="INTEGER" property="status" />
         <result column="avatar" jdbcType="VARCHAR" property="avatar" />
     </resultMap>
-
-  <select id="getAdminPasswordDto" resultType="com.rancho.web.admin.domain.dto.AdminPasswordDto">
-    select id,username,password,status from sms_admin where username=#{username}
-  </select>
 
     <select id="list" resultMap="BaseResultMap">
         select * from sms_admin
@@ -24,7 +21,7 @@
         </where>
     </select>
 
-    <insert id="saveAdminPasswordDto" parameterType="com.rancho.web.admin.domain.dto.AdminPasswordDto" keyProperty="id" useGeneratedKeys="true">
+    <insert id="save" parameterType="com.rancho.web.admin.domain.SmsAdmin" keyProperty="id" useGeneratedKeys="true">
         insert into sms_admin (username,nickname,create_time,status,password) values (#{username},#{nickname},now(),#{status},#{password})
     </insert>
 

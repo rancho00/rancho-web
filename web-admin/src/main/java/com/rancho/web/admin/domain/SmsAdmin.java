@@ -16,8 +16,10 @@ public class SmsAdmin implements Serializable {
     @ApiModelProperty(value = "账户")
     private String username;
 
+    @ApiModelProperty(value = "密码")
+    private String password;
+
     @ApiModelProperty(value = "昵称")
-    @NotNull
     private String nickname;
 
     @ApiModelProperty(value = "头像")

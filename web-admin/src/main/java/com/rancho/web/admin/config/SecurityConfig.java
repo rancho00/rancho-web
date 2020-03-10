@@ -3,9 +3,9 @@ package com.rancho.web.admin.config;
 import com.rancho.web.admin.component.JwtAuthenticationTokenFilter;
 import com.rancho.web.admin.component.RestAuthenticationEntryPoint;
 import com.rancho.web.admin.component.RestfulAccessDeniedHandler;
+import com.rancho.web.admin.domain.SmsAdmin;
 import com.rancho.web.admin.domain.SmsMenu;
 import com.rancho.web.admin.domain.bo.AdminUserDetails;
-import com.rancho.web.admin.domain.dto.AdminPasswordDto;
 import com.rancho.web.admin.service.SmsAdminService;
 import com.rancho.web.admin.service.SmsMenuService;
 import com.rancho.web.admin.service.SmsRoleService;
@@ -104,19 +104,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public UserDetailsService userDetailsService() {
         //获取登录用户信息
         return username -> {
-            AdminPasswordDto adminPasswordDto = smsAdminService.getAdminPasswordDto(username);
-            if (adminPasswordDto != null) {
-                if(adminPasswordDto.getStatus()==0){
+            SmsAdmin smsAdmin = smsAdminService.getByUsername(username);
+            if (smsAdmin != null) {
+                if(smsAdmin.getStatus()==0){
                     throw new CommonException("账号已被停用");
                 }
                 //加载管理员菜单
                 List<SmsMenu> smsMenuList;
-                if("admin".equals(adminPasswordDto.getUsername())){
+                if("admin".equals(smsAdmin.getUsername())){
                     smsMenuList = smsMenuService.listHierarchy();
                 }else{
-                    smsMenuList = smsMenuService.listAdminHierarchyMenus(adminPasswordDto.getId());
+                    smsMenuList = smsMenuService.listAdminHierarchyMenus(smsAdmin.getId());
                 }
-                return new AdminUserDetails(adminPasswordDto, smsMenuList);
+                return new AdminUserDetails(smsAdmin, smsMenuList);
             }
             throw new UsernameNotFoundException("用户名或密码错误");
         };

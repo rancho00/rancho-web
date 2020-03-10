@@ -1,7 +1,7 @@
 package com.rancho.web.admin.domain.bo;
 
+import com.rancho.web.admin.domain.SmsAdmin;
 import com.rancho.web.admin.domain.SmsMenu;
-import com.rancho.web.admin.domain.dto.AdminPasswordDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,10 +14,10 @@ import java.util.List;
  * SpringSecurity需要的用户详情
  */
 public class AdminUserDetails implements UserDetails {
-    private AdminPasswordDto adminPasswordDto;
+    private SmsAdmin smsAdmin;
     private List<SmsMenu> smsMenuList;
-    public AdminUserDetails(AdminPasswordDto adminPasswordDto, List<SmsMenu> smsMenuList) {
-        this.adminPasswordDto = adminPasswordDto;
+    public AdminUserDetails(SmsAdmin smsAdmin, List<SmsMenu> smsMenuList) {
+        this.smsAdmin = smsAdmin;
         this.smsMenuList = smsMenuList;
     }
 
@@ -39,12 +39,12 @@ public class AdminUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return adminPasswordDto.getPassword();
+        return smsAdmin.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return adminPasswordDto.getUsername();
+        return smsAdmin.getUsername();
     }
 
     @Override
@@ -64,6 +64,6 @@ public class AdminUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return adminPasswordDto.getStatus().equals(1);
+        return smsAdmin.getStatus().equals(1);
     }
 }

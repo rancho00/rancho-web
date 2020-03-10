@@ -5,10 +5,8 @@ import com.rancho.web.admin.domain.SmsAdminRole;
 import com.rancho.web.admin.domain.SmsMenu;
 import com.rancho.web.admin.domain.SmsRole;
 import com.rancho.web.admin.domain.bo.AdminUserDetails;
-import com.rancho.web.admin.domain.dto.AdminPasswordDto;
-import com.rancho.web.admin.domain.vo.AdminLoginVo;
-import com.rancho.web.admin.domain.vo.AdminVo;
-import com.rancho.web.admin.service.SmsAdminRoleService;
+import com.rancho.web.admin.domain.dto.adminDto.AdminLoginDto;
+import com.rancho.web.admin.domain.dto.adminDto.AdminBaseDto;
 import com.rancho.web.admin.service.SmsAdminService;
 import com.rancho.web.admin.service.SmsMenuService;
 import com.rancho.web.admin.service.SmsRoleService;
@@ -26,8 +24,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,8 +43,6 @@ public class SmsAdminController {
     @Resource
     private SmsRoleService smsRoleService;
 
-    @Resource
-    private SmsAdminRoleService smsAdminRoleService;
 
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
@@ -58,8 +52,8 @@ public class SmsAdminController {
     @ApiOperation(value = "登陆", notes = "登陆")
     @PostMapping("/login")
     @ResponseBody
-    public CommonResult login(@Validated @RequestBody AdminLoginVo adminLoginVo){
-        String token= smsAdminService.login(adminLoginVo);
+    public CommonResult login(@Validated @RequestBody AdminLoginDto adminLoginDto){
+        String token= smsAdminService.login(adminLoginDto);
         if(StringUtils.isEmpty(token)){
             return CommonResult.failed("账号密码不正确");
         }
@@ -74,7 +68,7 @@ public class SmsAdminController {
     @ResponseBody
     public CommonResult info() {
         AdminUserDetails adminUserDetails = (AdminUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        SmsAdmin smsAdmin = smsAdminService.info(adminUserDetails.getUsername());
+        SmsAdmin smsAdmin = smsAdminService.getByUsername(adminUserDetails.getUsername());
         List<SmsRole> smsRoleList;
         //加载角色
         if("admin".equals(smsAdmin.getUsername())){
@@ -107,8 +101,8 @@ public class SmsAdminController {
     @GetMapping
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:list')")
-    public CommonResult<PageInfo<SmsAdmin>> list(Page page) {
-        PageInfo<SmsAdmin> pageInfo = PageInfo.convertPage(smsAdminService.list(page));
+    public CommonResult<PageInfo<SmsAdmin>> list(SmsAdmin smsAdmin,Page page) {
+        PageInfo<SmsAdmin> pageInfo = PageInfo.convertPage(smsAdminService.list(smsAdmin,page));
         return CommonResult.success(pageInfo);
     }
 
@@ -116,12 +110,8 @@ public class SmsAdminController {
     @PostMapping
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:save')")
-    public CommonResult save(@Validated @RequestBody AdminVo adminVo) {
-        AdminPasswordDto adminPasswordDto=new AdminPasswordDto();
-        adminPasswordDto.setUsername(adminVo.getUsername());
-        adminPasswordDto.setNickname(adminVo.getNickname());
-        adminPasswordDto.setStatus(adminVo.getStatus());
-        smsAdminService.save(adminPasswordDto,adminVo.getRoleIdList());
+    public CommonResult save(@Validated @RequestBody AdminBaseDto adminBaseDto) {
+        smsAdminService.save(adminBaseDto);
         return CommonResult.success();
     }
 
@@ -129,36 +119,20 @@ public class SmsAdminController {
     @GetMapping("/{id}")
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:detail')")
-    public  CommonResult<AdminVo> getById(@PathVariable Integer id) {
-        SmsAdmin smsAdmin = smsAdminService.getById(id);
-        //查询角色
-        SmsAdminRole smsAdminRole =new SmsAdminRole();
-        smsAdminRole.setAdminId(id);
-        List<SmsAdminRole> smsAdminRoleList = smsAdminRoleService.list(smsAdminRole);
-        AdminVo adminVo=new AdminVo();
-        adminVo.setId(smsAdmin.getId());
-        adminVo.setUsername(smsAdmin.getUsername());
-        adminVo.setNickname(smsAdmin.getNickname());
-        adminVo.setStatus(smsAdmin.getStatus());
-        List<Integer> roleIdList=new ArrayList<>();
-        for(SmsAdminRole sar: smsAdminRoleList){
-            roleIdList.add(sar.getRoleId());
-        }
-        adminVo.setRoleIdList(roleIdList);
-        return CommonResult.success(adminVo);
+    public  CommonResult<AdminBaseDto> getById(@PathVariable Integer id) {
+        AdminBaseDto adminBaseDto = smsAdminService.getAdminBaseDtoById(id);
+        return CommonResult.success(adminBaseDto);
     }
 
     @ApiOperation(value = "更新管理员")
     @PutMapping("/{id}")
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:update')")
-    public CommonResult update(@PathVariable Integer id, @Validated @RequestBody AdminVo adminVo) {
-        SmsAdmin smsAdmin =new SmsAdmin();
-        smsAdmin.setId(adminVo.getId());
-        smsAdmin.setUsername(adminVo.getUsername());
-        smsAdmin.setNickname(adminVo.getNickname());
-        smsAdmin.setStatus(adminVo.getStatus());
-        smsAdminService.update(smsAdmin,adminVo.getRoleIdList());
+    public CommonResult update(@PathVariable Integer id, @Validated @RequestBody AdminBaseDto adminBaseDto) {
+        if(id==null || !id.equals(adminBaseDto.getId())){
+            return CommonResult.failed("无效id");
+        }
+        smsAdminService.update(adminBaseDto);
         return CommonResult.success();
     }
 
