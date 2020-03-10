@@ -63,23 +63,6 @@ public class SmsMenuServiceImpl extends BaseService implements SmsMenuService {
     }
 
     @Override
-    public List<SmsMenu> listRoleHierarchyMenus(Integer roleId) {
-        //查询目录
-        List<SmsMenu> smsMenuList = smsMenuMapper.listRoleMenus(roleId,0,0);
-        //查询菜单
-        for(SmsMenu dir: smsMenuList){
-            List<SmsMenu> menuList= smsMenuMapper.listRoleMenus(roleId,1,dir.getId());
-            dir.setSmsMenuList(menuList);
-            //查询菜单功能
-            for(SmsMenu menu:menuList){
-                List<SmsMenu> permissionMenuList= smsMenuMapper.listRoleMenus(roleId,2,menu.getId());
-                menu.setSmsMenuList(permissionMenuList);
-            }
-        }
-        return smsMenuList;
-    }
-
-    @Override
     public List<SmsMenu> list(SmsMenu smsMenu, Page page) {
         setPage(page);
         List<SmsMenu> smsMenuList = smsMenuMapper.list(smsMenu);
@@ -124,5 +107,11 @@ public class SmsMenuServiceImpl extends BaseService implements SmsMenuService {
     @Override
     public SmsMenu getById(Integer id) {
         return smsMenuMapper.getById(id);
+    }
+
+    @Override
+    public List<SmsMenu> listRoleMenus(Integer roleId) {
+        List<SmsMenu> smsMenuList = smsMenuMapper.listRoleMenus(roleId);
+        return smsMenuList;
     }
 }

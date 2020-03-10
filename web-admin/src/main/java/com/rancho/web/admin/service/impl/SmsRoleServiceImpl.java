@@ -3,6 +3,7 @@ package com.rancho.web.admin.service.impl;
 import com.rancho.web.admin.domain.SmsMenu;
 import com.rancho.web.admin.domain.SmsRole;
 import com.rancho.web.admin.domain.SmsRoleMenu;
+import com.rancho.web.admin.domain.dto.roleDto.RoleBaseDto;
 import com.rancho.web.admin.mapper.SmsAdminRoleMapper;
 import com.rancho.web.admin.mapper.SmsRoleMapper;
 import com.rancho.web.admin.mapper.SmsRoleMenuMapper;
@@ -12,11 +13,13 @@ import com.rancho.web.common.base.BaseService;
 import com.rancho.web.common.common.CommonException;
 import com.rancho.web.common.page.Page;
 import com.rancho.web.common.page.PageInfo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SmsRoleServiceImpl extends BaseService implements SmsRoleService {
@@ -46,65 +49,42 @@ public class SmsRoleServiceImpl extends BaseService implements SmsRoleService {
     }
 
     @Override
-    public void save(SmsRole smsRole) {
-        smsRole.setCreateTime(new Date());
+    public void save(RoleBaseDto roleBaseDto) {
+        SmsRole smsRole=new SmsRole();
+        BeanUtils.copyProperties(roleBaseDto,smsRole);
         smsRoleMapper.save(smsRole);
         //添加角色菜单权限
-        List<SmsMenu> smsMenuList = smsRole.getSmsMenuList();
-        SmsRoleMenu smsRoleMenu =new SmsRoleMenu();
-        for(SmsMenu smsMenu : smsMenuList){
+        for(Integer menuId:roleBaseDto.getMenuIdList()){
+            SmsRoleMenu smsRoleMenu =new SmsRoleMenu();
             smsRoleMenu.setRoleId(smsRole.getId());
-            smsRoleMenu.setMenuId(smsMenu.getId());
-            smsRoleMenu.setCreateTime(new Date());
+            smsRoleMenu.setMenuId(menuId);
             smsRoleMenuMapper.save(smsRoleMenu);
-            for(SmsMenu nextSmsMenu : smsMenu.getSmsMenuList()){
-                smsRoleMenu.setRoleId(smsRole.getId());
-                smsRoleMenu.setMenuId(nextSmsMenu.getId());
-                smsRoleMenu.setCreateTime(new Date());
-                smsRoleMenuMapper.save(smsRoleMenu);
-                for(SmsMenu permissionMenu: nextSmsMenu.getSmsMenuList()){
-                    smsRoleMenu.setRoleId(smsRole.getId());
-                    smsRoleMenu.setMenuId(permissionMenu.getId());
-                    smsRoleMenu.setCreateTime(new Date());
-                    smsRoleMenuMapper.save(smsRoleMenu);
-                }
-            }
         }
     }
 
     @Override
-    public SmsRole getById(Integer id) {
+    public RoleBaseDto getRoleBaseDtoById(Integer id) {
         SmsRole smsRole = smsRoleMapper.getById(id);
+        RoleBaseDto roleBaseDto=new RoleBaseDto();
+        BeanUtils.copyProperties(smsRole,roleBaseDto);
         //加载权限菜单
-        smsRole.setSmsMenuList(smsMenuService.listRoleHierarchyMenus(id));
-        return smsRole;
+        roleBaseDto.setMenuIdList(smsMenuService.listRoleMenus(id).stream().map(SmsMenu::getId).collect(Collectors.toList()));
+        return roleBaseDto;
     }
 
     @Override
-    public void update(Integer id,SmsRole smsRole) {
+    public void update(Integer id,RoleBaseDto roleBaseDto) {
+        SmsRole smsRole=new SmsRole();
+        BeanUtils.copyProperties(roleBaseDto,smsRole);
         smsRoleMapper.update(smsRole);
         //删除角色菜单权限
         smsRoleMenuMapper.deleteByRoleId(smsRole.getId());
-        //添加角色菜单权限啊
-        List<SmsMenu> smsMenuList = smsRole.getSmsMenuList();
-        SmsRoleMenu smsRoleMenu =new SmsRoleMenu();
-        for(SmsMenu smsMenu : smsMenuList){
+        //添加角色菜单权限
+        for(Integer menuId:roleBaseDto.getMenuIdList()){
+            SmsRoleMenu smsRoleMenu =new SmsRoleMenu();
             smsRoleMenu.setRoleId(smsRole.getId());
-            smsRoleMenu.setMenuId(smsMenu.getId());
-            smsRoleMenu.setCreateTime(new Date());
+            smsRoleMenu.setMenuId(menuId);
             smsRoleMenuMapper.save(smsRoleMenu);
-            for(SmsMenu nextSmsMenu : smsMenu.getSmsMenuList()){
-                smsRoleMenu.setRoleId(smsRole.getId());
-                smsRoleMenu.setMenuId(nextSmsMenu.getId());
-                smsRoleMenu.setCreateTime(new Date());
-                smsRoleMenuMapper.save(smsRoleMenu);
-                for(SmsMenu permissionMenu: nextSmsMenu.getSmsMenuList()){
-                    smsRoleMenu.setRoleId(smsRole.getId());
-                    smsRoleMenu.setMenuId(permissionMenu.getId());
-                    smsRoleMenu.setCreateTime(new Date());
-                    smsRoleMenuMapper.save(smsRoleMenu);
-                }
-            }
         }
     }
 

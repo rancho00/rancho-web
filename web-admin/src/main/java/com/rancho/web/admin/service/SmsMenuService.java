@@ -12,7 +12,6 @@ public interface SmsMenuService {
 
     List<SmsMenu> listAdminHierarchyMenus(Integer adminId);
 
-    List<SmsMenu> listRoleHierarchyMenus(Integer roleId);
 
     List<SmsMenu> list(SmsMenu smsMenu, Page page);
 
@@ -25,4 +24,6 @@ public interface SmsMenuService {
     void delete(Integer id);
 
     SmsMenu getById(Integer id);
+
+    List<SmsMenu> listRoleMenus(Integer roleId);
 }

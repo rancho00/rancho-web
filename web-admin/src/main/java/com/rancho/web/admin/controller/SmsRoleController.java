@@ -1,21 +1,19 @@
 package com.rancho.web.admin.controller;
 
-import com.rancho.web.admin.domain.SmsMenu;
 import com.rancho.web.admin.domain.SmsRole;
-import com.rancho.web.admin.service.SmsMenuService;
+import com.rancho.web.admin.domain.dto.roleDto.RoleBaseDto;
 import com.rancho.web.admin.service.SmsRoleService;
 import com.rancho.web.common.page.Page;
 import com.rancho.web.common.page.PageInfo;
 import com.rancho.web.common.result.CommonResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @Api(value = "角色管理", tags = "角色管理")
@@ -23,7 +21,7 @@ import java.util.List;
 @RequestMapping("/role")
 public class SmsRoleController {
 
-    @Resource
+    @Autowired
     private SmsRoleService smsRoleService;
 
     @ApiOperation(value = "角色列表")
@@ -47,8 +45,8 @@ public class SmsRoleController {
     @PostMapping
     @ResponseBody
     @PreAuthorize("hasAuthority('role:save')")
-    public CommonResult save(@Validated @RequestBody SmsRole smsRole) {
-        smsRoleService.save(smsRole);
+    public CommonResult save(@Validated @RequestBody RoleBaseDto roleBaseDto) {
+        smsRoleService.save(roleBaseDto);
         return CommonResult.success();
     }
 
@@ -56,20 +54,20 @@ public class SmsRoleController {
     @GetMapping("/{id}")
     @ResponseBody
     @PreAuthorize("hasAuthority('role:detail')")
-    public  CommonResult<SmsRole> getById(@PathVariable Integer id) {
-        SmsRole smsRole = smsRoleService.getById(id);
-        return CommonResult.success(smsRole);
+    public  CommonResult<RoleBaseDto> getById(@PathVariable Integer id) {
+        RoleBaseDto roleBaseDto = smsRoleService.getRoleBaseDtoById(id);
+        return CommonResult.success(roleBaseDto);
     }
 
     @ApiOperation(value = "更新角色")
     @PutMapping("/{id}")
     @ResponseBody
     @PreAuthorize("hasAuthority('role:update')")
-    public CommonResult update(@PathVariable Integer id, @Validated @RequestBody SmsRole smsRole) {
-        if(id==null || !id.equals(smsRole.getId())){
+    public CommonResult update(@PathVariable Integer id, @Validated @RequestBody RoleBaseDto roleBaseDto) {
+        if(id==null || !id.equals(roleBaseDto.getId())){
             return CommonResult.failed("无效id");
         }
-        smsRoleService.update(id,smsRole);
+        smsRoleService.update(id,roleBaseDto);
         return CommonResult.success();
     }
 
