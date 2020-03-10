@@ -23,7 +23,7 @@
     </select>
 
     <insert id="save" parameterType="com.rancho.web.admin.domain.SmsAdmin" useGeneratedKeys="true" keyProperty="id">
-        insert into sms_role (name,description,status,create_time) values (#{name},#{description},#{status},#{createTime})
+        insert into sms_role (name,description,status,create_time) values (#{name},#{description},#{status},now())
     </insert>
 
     <select id="getById" resultMap="BaseResultMap">

@@ -9,7 +9,7 @@
     </resultMap>
 
     <insert id="save" parameterType="com.rancho.web.admin.domain.SmsRoleMenu" >
-        insert into sms_role_menu (role_id,menu_id,create_time) values (#{roleId},#{menuId},#{createTime})
+        insert into sms_role_menu (role_id,menu_id,create_time) values (#{roleId},#{menuId},now())
     </insert>
 
     <delete id="deleteByRoleId">

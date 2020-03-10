@@ -46,13 +46,6 @@
                                         where sm.pid=#{pid} and sm.type=#{type}  and sar.admin_id=#{adminId}
   </select>
 
-  <select id="listRoleMenus" parameterType="int" resultMap="BaseResultMap">
-    select sm.* from sms_role_menu srm join sms_menu sm on srm.menu_id=sm.id where
-    sm.pid=#{pid} and sm.type=#{type}
-    and srm.role_id=#{roleId}
-  </select>
-
-
   <insert id="save" parameterType="com.rancho.web.admin.domain.SmsMenu">
     insert into sms_menu (pid,name,value,type,uri,status,component,icon,is_hidden,sort,create_time) values (
     #{pid},
@@ -109,5 +102,10 @@
 
   <select id="getById" resultMap="BaseResultMap">
     select * from sms_menu where id=#{id}
+  </select>
+
+
+  <select id="listRoleMenus" parameterType="int" resultMap="BaseResultMap">
+    select sm.* from sms_role_menu srm join sms_menu sm on srm.menu_id=sm.id where srm.role_id=#{roleId}
   </select>
 </mapper>
