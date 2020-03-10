@@ -16,6 +16,7 @@ import com.rancho.web.common.result.CommonResult;
 import com.rancho.web.common.util.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,8 +24,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,13 +33,13 @@ import java.util.Map;
 @RequestMapping("/admin")
 public class SmsAdminController {
 
-    @Resource
+    @Autowired
     private SmsAdminService smsAdminService;
 
-    @Resource
+    @Autowired
     private SmsMenuService smsMenuService;
 
-    @Resource
+    @Autowired
     private SmsRoleService smsRoleService;
 
 
