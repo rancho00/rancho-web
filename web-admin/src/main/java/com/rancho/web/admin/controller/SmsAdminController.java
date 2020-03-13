@@ -118,7 +118,7 @@ public class SmsAdminController {
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:detail')")
     public  CommonResult<SmsAdminBase> getById(@PathVariable Integer id) {
-        SmsAdminBase smsAdminBase = smsAdminService.getAdminBaseDtoById(id);
+        SmsAdminBase smsAdminBase = smsAdminService.getAdminBaseById(id);
         return CommonResult.success(smsAdminBase);
     }
 

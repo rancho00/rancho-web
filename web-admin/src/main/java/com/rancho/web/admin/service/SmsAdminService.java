@@ -23,5 +23,5 @@ public interface SmsAdminService {
 
     SmsAdmin getByUsername(String username);
 
-    SmsAdminBase getAdminBaseDtoById(Integer id);
+    SmsAdminBase getAdminBaseById(Integer id);
 }

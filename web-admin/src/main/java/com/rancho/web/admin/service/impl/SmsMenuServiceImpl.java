@@ -9,19 +9,19 @@ import com.rancho.web.common.base.BaseService;
 import com.rancho.web.common.common.CommonException;
 import com.rancho.web.common.page.Page;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class SmsMenuServiceImpl extends BaseService implements SmsMenuService {
 
-    @Resource
+    @Autowired
     private SmsMenuMapper smsMenuMapper;
 
-    @Resource
+    @Autowired
     private SmsRoleMenuMapper smsRoleMenuMapper;
 
     @Override

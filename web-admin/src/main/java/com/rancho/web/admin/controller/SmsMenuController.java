@@ -1,7 +1,6 @@
 package com.rancho.web.admin.controller;
 
 import com.rancho.web.admin.domain.SmsMenu;
-import com.rancho.web.admin.domain.SmsRole;
 import com.rancho.web.admin.domain.dto.menu.SmsMenuNode;
 import com.rancho.web.admin.service.SmsMenuService;
 import com.rancho.web.common.page.Page;
@@ -11,12 +10,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @Controller
@@ -24,7 +23,7 @@ import java.util.List;
 @Api(value = "菜单管理", tags = "菜单管理")
 public class SmsMenuController {
 
-    @Resource
+    @Autowired
     private SmsMenuService smsMenuService;
 
 

@@ -13,6 +13,7 @@ import com.rancho.web.common.base.BaseService;
 import com.rancho.web.common.common.CommonException;
 import com.rancho.web.common.page.Page;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -22,16 +23,16 @@ import java.util.stream.Collectors;
 @Service
 public class SmsRoleServiceImpl extends BaseService implements SmsRoleService {
 
-    @Resource
+    @Autowired
     private SmsRoleMapper smsRoleMapper;
 
     @Resource
     private SmsAdminRoleMapper smsAdminRoleMapper;
 
-    @Resource
+    @Autowired
     private SmsRoleMenuMapper smsRoleMenuMapper;
 
-    @Resource
+    @Autowired
     private SmsMenuService smsMenuService;
 
     @Override
@@ -61,7 +62,7 @@ public class SmsRoleServiceImpl extends BaseService implements SmsRoleService {
     }
 
     @Override
-    public SmsRoleBase getRoleBaseDtoById(Integer id) {
+    public SmsRoleBase getRoleBaseById(Integer id) {
         SmsRole smsRole = smsRoleMapper.getById(id);
         SmsRoleBase smsRoleBase =new SmsRoleBase();
         BeanUtils.copyProperties(smsRole, smsRoleBase);

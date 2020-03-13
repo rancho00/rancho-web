@@ -37,7 +37,7 @@ public class SmsRoleController {
     @GetMapping("/simpleList")
     @ResponseBody
     @PreAuthorize("hasAuthority('role:list')")
-    public  CommonResult<List<SmsRole>> getRoles(SmsRole smsRole) {
+    public  CommonResult<List<SmsRole>> getRoleList(SmsRole smsRole) {
         return CommonResult.success(smsRoleService.list(smsRole,null));
     }
 
@@ -55,7 +55,7 @@ public class SmsRoleController {
     @ResponseBody
     @PreAuthorize("hasAuthority('role:detail')")
     public  CommonResult<SmsRoleBase> getById(@PathVariable Integer id) {
-        SmsRoleBase smsRoleBase = smsRoleService.getRoleBaseDtoById(id);
+        SmsRoleBase smsRoleBase = smsRoleService.getRoleBaseById(id);
         return CommonResult.success(smsRoleBase);
     }
 

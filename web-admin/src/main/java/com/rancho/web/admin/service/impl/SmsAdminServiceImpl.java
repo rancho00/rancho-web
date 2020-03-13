@@ -83,7 +83,7 @@ public class SmsAdminServiceImpl extends BaseService implements SmsAdminService 
         if(admin!=null){
             throw new CommonException("管理员已存在");
         }
-        smsAdminBase.setPassword(new BCryptPasswordEncoder().encode(smsAdminBase.getPassword()));
+        smsAdminBase.setPassword(new BCryptPasswordEncoder().encode("123456"));
         BeanUtils.copyProperties(smsAdminBase,admin);
         adminMapper.save(admin);
         //添加角色
@@ -132,7 +132,7 @@ public class SmsAdminServiceImpl extends BaseService implements SmsAdminService 
     }
 
     @Override
-    public SmsAdminBase getAdminBaseDtoById(Integer id) {
+    public SmsAdminBase getAdminBaseById(Integer id) {
         SmsAdmin admin=adminMapper.getById(id);
         SmsAdminBase smsAdminBase =new SmsAdminBase();
         BeanUtils.copyProperties(admin, smsAdminBase);

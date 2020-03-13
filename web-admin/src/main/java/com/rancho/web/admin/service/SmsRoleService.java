@@ -21,5 +21,5 @@ public interface SmsRoleService {
 
     List<SmsRole> listByAdminId(Integer adminId);
 
-    SmsRoleBase getRoleBaseDtoById(Integer id);
+    SmsRoleBase getRoleBaseById(Integer id);
 }
