@@ -43,7 +43,7 @@
                     join sms_admin_role sar on sr.id=sar.role_id and sr.status=1
                     join sms_role_menu srm on sar.role_id=srm.role_id
                     join sms_menu sm on srm.menu_id=sm.id
-                                        where sm.pid=#{pid} and sm.type=#{type}  and sar.admin_id=#{adminId}
+                                        where sar.admin_id=#{adminId}
   </select>
 
   <insert id="save" parameterType="com.rancho.web.admin.domain.SmsMenu">

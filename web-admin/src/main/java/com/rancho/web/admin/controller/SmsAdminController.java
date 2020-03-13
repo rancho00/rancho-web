@@ -1,12 +1,10 @@
 package com.rancho.web.admin.controller;
 
 import com.rancho.web.admin.domain.SmsAdmin;
-import com.rancho.web.admin.domain.SmsAdminRole;
-import com.rancho.web.admin.domain.SmsMenu;
 import com.rancho.web.admin.domain.SmsRole;
 import com.rancho.web.admin.domain.bo.AdminUserDetails;
-import com.rancho.web.admin.domain.dto.adminDto.AdminLoginDto;
-import com.rancho.web.admin.domain.dto.adminDto.AdminBaseDto;
+import com.rancho.web.admin.domain.dto.adminDto.SmsAdminLogin;
+import com.rancho.web.admin.domain.dto.adminDto.SmsAdminBase;
 import com.rancho.web.admin.domain.dto.menu.SmsMenuNode;
 import com.rancho.web.admin.service.SmsAdminService;
 import com.rancho.web.admin.service.SmsMenuService;
@@ -52,8 +50,8 @@ public class SmsAdminController {
     @ApiOperation(value = "登陆", notes = "登陆")
     @PostMapping("/login")
     @ResponseBody
-    public CommonResult login(@Validated @RequestBody AdminLoginDto adminLoginDto){
-        String token= smsAdminService.login(adminLoginDto);
+    public CommonResult login(@Validated @RequestBody SmsAdminLogin smsAdminLogin){
+        String token= smsAdminService.login(smsAdminLogin);
         if(StringUtils.isEmpty(token)){
             return CommonResult.failed("账号密码不正确");
         }
@@ -110,8 +108,8 @@ public class SmsAdminController {
     @PostMapping
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:save')")
-    public CommonResult save(@Validated @RequestBody AdminBaseDto adminBaseDto) {
-        smsAdminService.save(adminBaseDto);
+    public CommonResult save(@Validated @RequestBody SmsAdminBase smsAdminBase) {
+        smsAdminService.save(smsAdminBase);
         return CommonResult.success();
     }
 
@@ -119,20 +117,20 @@ public class SmsAdminController {
     @GetMapping("/{id}")
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:detail')")
-    public  CommonResult<AdminBaseDto> getById(@PathVariable Integer id) {
-        AdminBaseDto adminBaseDto = smsAdminService.getAdminBaseDtoById(id);
-        return CommonResult.success(adminBaseDto);
+    public  CommonResult<SmsAdminBase> getById(@PathVariable Integer id) {
+        SmsAdminBase smsAdminBase = smsAdminService.getAdminBaseDtoById(id);
+        return CommonResult.success(smsAdminBase);
     }
 
     @ApiOperation(value = "更新管理员")
     @PutMapping("/{id}")
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:update')")
-    public CommonResult update(@PathVariable Integer id, @Validated @RequestBody AdminBaseDto adminBaseDto) {
-        if(id==null || !id.equals(adminBaseDto.getId())){
+    public CommonResult update(@PathVariable Integer id, @Validated @RequestBody SmsAdminBase smsAdminBase) {
+        if(id==null || !id.equals(smsAdminBase.getId())){
             return CommonResult.failed("无效id");
         }
-        smsAdminService.update(adminBaseDto);
+        smsAdminService.update(smsAdminBase);
         return CommonResult.success();
     }
 

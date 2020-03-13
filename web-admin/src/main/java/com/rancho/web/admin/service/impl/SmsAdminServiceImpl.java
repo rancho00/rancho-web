@@ -2,8 +2,8 @@ package com.rancho.web.admin.service.impl;
 
 import com.rancho.web.admin.domain.SmsAdmin;
 import com.rancho.web.admin.domain.SmsAdminRole;
-import com.rancho.web.admin.domain.dto.adminDto.AdminBaseDto;
-import com.rancho.web.admin.domain.dto.adminDto.AdminLoginDto;
+import com.rancho.web.admin.domain.dto.adminDto.SmsAdminBase;
+import com.rancho.web.admin.domain.dto.adminDto.SmsAdminLogin;
 import com.rancho.web.admin.mapper.SmsAdminMapper;
 import com.rancho.web.admin.mapper.SmsAdminRoleMapper;
 import com.rancho.web.admin.mapper.SmsMenuMapper;
@@ -34,10 +34,10 @@ import java.util.List;
 @Service
 public class SmsAdminServiceImpl extends BaseService implements SmsAdminService {
 
-    @Resource
+    @Autowired
     private SmsAdminMapper adminMapper;
 
-    @Resource
+    @Autowired
     private UserDetailsService userDetailsService;
 
     @Autowired
@@ -53,12 +53,12 @@ public class SmsAdminServiceImpl extends BaseService implements SmsAdminService 
     private SmsMenuMapper smsMenuMapper;
 
     @Override
-    public String login(AdminLoginDto adminLoginDto) {
+    public String login(SmsAdminLogin smsAdminLogin) {
         String token = null;
         //密码需要客户端加密后传递
         try {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(adminLoginDto.getUsername());
-           if(!passwordEncoder.matches(adminLoginDto.getPassword(),userDetails.getPassword())){
+            UserDetails userDetails = userDetailsService.loadUserByUsername(smsAdminLogin.getUsername());
+           if(!passwordEncoder.matches(smsAdminLogin.getPassword(),userDetails.getPassword())){
                 throw new BadCredentialsException("密码不正确");
             }
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -78,16 +78,16 @@ public class SmsAdminServiceImpl extends BaseService implements SmsAdminService 
     }
 
     @Override
-    public void save(AdminBaseDto adminBaseDto) {
-        SmsAdmin admin=adminMapper.getByUsername(adminBaseDto.getUsername());
+    public void save(SmsAdminBase smsAdminBase) {
+        SmsAdmin admin=adminMapper.getByUsername(smsAdminBase.getUsername());
         if(admin!=null){
             throw new CommonException("管理员已存在");
         }
-        adminBaseDto.setPassword(new BCryptPasswordEncoder().encode(adminBaseDto.getPassword()));
-        BeanUtils.copyProperties(adminBaseDto,admin);
+        smsAdminBase.setPassword(new BCryptPasswordEncoder().encode(smsAdminBase.getPassword()));
+        BeanUtils.copyProperties(smsAdminBase,admin);
         adminMapper.save(admin);
         //添加角色
-        for(Integer roleId:adminBaseDto.getRoleIdList()){
+        for(Integer roleId: smsAdminBase.getRoleIdList()){
             SmsAdminRole smsAdminRole =new SmsAdminRole();
             smsAdminRole.setAdminId(admin.getId());
             smsAdminRole.setRoleId(roleId);
@@ -103,15 +103,15 @@ public class SmsAdminServiceImpl extends BaseService implements SmsAdminService 
 
 
     @Override
-    public void update(AdminBaseDto adminBaseDto) {
+    public void update(SmsAdminBase smsAdminBase) {
         SmsAdmin smsAdmin=new SmsAdmin();
-        BeanUtils.copyProperties(adminBaseDto,smsAdmin);
+        BeanUtils.copyProperties(smsAdminBase,smsAdmin);
         adminMapper.update(smsAdmin);
         //先删除角色再添加角色
-        smsAdminRoleMapper.deleteByAdminId(adminBaseDto.getId());
-        for(Integer roleId:adminBaseDto.getRoleIdList()){
+        smsAdminRoleMapper.deleteByAdminId(smsAdminBase.getId());
+        for(Integer roleId: smsAdminBase.getRoleIdList()){
             SmsAdminRole smsAdminRole =new SmsAdminRole();
-            smsAdminRole.setAdminId(adminBaseDto.getId());
+            smsAdminRole.setAdminId(smsAdminBase.getId());
             smsAdminRole.setRoleId(roleId);
             smsAdminRole.setCreateTime(new Date());
             smsAdminRoleMapper.save(smsAdminRole);
@@ -132,10 +132,10 @@ public class SmsAdminServiceImpl extends BaseService implements SmsAdminService 
     }
 
     @Override
-    public AdminBaseDto getAdminBaseDtoById(Integer id) {
+    public SmsAdminBase getAdminBaseDtoById(Integer id) {
         SmsAdmin admin=adminMapper.getById(id);
-        AdminBaseDto adminBaseDto=new AdminBaseDto();
-        BeanUtils.copyProperties(admin,adminBaseDto);
+        SmsAdminBase smsAdminBase =new SmsAdminBase();
+        BeanUtils.copyProperties(admin, smsAdminBase);
         //查询角色
         SmsAdminRole smsAdminRole =new SmsAdminRole();
         smsAdminRole.setAdminId(id);
@@ -144,7 +144,7 @@ public class SmsAdminServiceImpl extends BaseService implements SmsAdminService 
         for(SmsAdminRole sar: smsAdminRoleList){
             roleIdList.add(sar.getRoleId());
         }
-        adminBaseDto.setRoleIdList(roleIdList);
-        return adminBaseDto;
+        smsAdminBase.setRoleIdList(roleIdList);
+        return smsAdminBase;
     }
 }

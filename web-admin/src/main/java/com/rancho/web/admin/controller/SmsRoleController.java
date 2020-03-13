@@ -1,7 +1,7 @@
 package com.rancho.web.admin.controller;
 
 import com.rancho.web.admin.domain.SmsRole;
-import com.rancho.web.admin.domain.dto.roleDto.RoleBaseDto;
+import com.rancho.web.admin.domain.dto.roleDto.SmsRoleBase;
 import com.rancho.web.admin.service.SmsRoleService;
 import com.rancho.web.common.page.Page;
 import com.rancho.web.common.page.PageInfo;
@@ -45,8 +45,8 @@ public class SmsRoleController {
     @PostMapping
     @ResponseBody
     @PreAuthorize("hasAuthority('role:save')")
-    public CommonResult save(@Validated @RequestBody RoleBaseDto roleBaseDto) {
-        smsRoleService.save(roleBaseDto);
+    public CommonResult save(@Validated @RequestBody SmsRoleBase smsRoleBase) {
+        smsRoleService.save(smsRoleBase);
         return CommonResult.success();
     }
 
@@ -54,20 +54,20 @@ public class SmsRoleController {
     @GetMapping("/{id}")
     @ResponseBody
     @PreAuthorize("hasAuthority('role:detail')")
-    public  CommonResult<RoleBaseDto> getById(@PathVariable Integer id) {
-        RoleBaseDto roleBaseDto = smsRoleService.getRoleBaseDtoById(id);
-        return CommonResult.success(roleBaseDto);
+    public  CommonResult<SmsRoleBase> getById(@PathVariable Integer id) {
+        SmsRoleBase smsRoleBase = smsRoleService.getRoleBaseDtoById(id);
+        return CommonResult.success(smsRoleBase);
     }
 
     @ApiOperation(value = "更新角色")
     @PutMapping("/{id}")
     @ResponseBody
     @PreAuthorize("hasAuthority('role:update')")
-    public CommonResult update(@PathVariable Integer id, @Validated @RequestBody RoleBaseDto roleBaseDto) {
-        if(id==null || !id.equals(roleBaseDto.getId())){
+    public CommonResult update(@PathVariable Integer id, @Validated @RequestBody SmsRoleBase smsRoleBase) {
+        if(id==null || !id.equals(smsRoleBase.getId())){
             return CommonResult.failed("无效id");
         }
-        smsRoleService.update(id,roleBaseDto);
+        smsRoleService.update(id, smsRoleBase);
         return CommonResult.success();
     }
 

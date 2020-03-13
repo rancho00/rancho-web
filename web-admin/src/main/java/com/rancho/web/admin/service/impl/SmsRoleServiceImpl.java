@@ -3,7 +3,7 @@ package com.rancho.web.admin.service.impl;
 import com.rancho.web.admin.domain.SmsMenu;
 import com.rancho.web.admin.domain.SmsRole;
 import com.rancho.web.admin.domain.SmsRoleMenu;
-import com.rancho.web.admin.domain.dto.roleDto.RoleBaseDto;
+import com.rancho.web.admin.domain.dto.roleDto.SmsRoleBase;
 import com.rancho.web.admin.mapper.SmsAdminRoleMapper;
 import com.rancho.web.admin.mapper.SmsRoleMapper;
 import com.rancho.web.admin.mapper.SmsRoleMenuMapper;
@@ -12,12 +12,10 @@ import com.rancho.web.admin.service.SmsRoleService;
 import com.rancho.web.common.base.BaseService;
 import com.rancho.web.common.common.CommonException;
 import com.rancho.web.common.page.Page;
-import com.rancho.web.common.page.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,12 +47,12 @@ public class SmsRoleServiceImpl extends BaseService implements SmsRoleService {
     }
 
     @Override
-    public void save(RoleBaseDto roleBaseDto) {
+    public void save(SmsRoleBase smsRoleBase) {
         SmsRole smsRole=new SmsRole();
-        BeanUtils.copyProperties(roleBaseDto,smsRole);
+        BeanUtils.copyProperties(smsRoleBase,smsRole);
         smsRoleMapper.save(smsRole);
         //添加角色菜单权限
-        for(Integer menuId:roleBaseDto.getMenuIdList()){
+        for(Integer menuId: smsRoleBase.getMenuIdList()){
             SmsRoleMenu smsRoleMenu =new SmsRoleMenu();
             smsRoleMenu.setRoleId(smsRole.getId());
             smsRoleMenu.setMenuId(menuId);
@@ -63,24 +61,24 @@ public class SmsRoleServiceImpl extends BaseService implements SmsRoleService {
     }
 
     @Override
-    public RoleBaseDto getRoleBaseDtoById(Integer id) {
+    public SmsRoleBase getRoleBaseDtoById(Integer id) {
         SmsRole smsRole = smsRoleMapper.getById(id);
-        RoleBaseDto roleBaseDto=new RoleBaseDto();
-        BeanUtils.copyProperties(smsRole,roleBaseDto);
+        SmsRoleBase smsRoleBase =new SmsRoleBase();
+        BeanUtils.copyProperties(smsRole, smsRoleBase);
         //加载权限菜单
-        roleBaseDto.setMenuIdList(smsMenuService.listRoleMenus(id).stream().map(SmsMenu::getId).collect(Collectors.toList()));
-        return roleBaseDto;
+        smsRoleBase.setMenuIdList(smsMenuService.listRoleMenus(id).stream().map(SmsMenu::getId).collect(Collectors.toList()));
+        return smsRoleBase;
     }
 
     @Override
-    public void update(Integer id,RoleBaseDto roleBaseDto) {
+    public void update(Integer id, SmsRoleBase smsRoleBase) {
         SmsRole smsRole=new SmsRole();
-        BeanUtils.copyProperties(roleBaseDto,smsRole);
+        BeanUtils.copyProperties(smsRoleBase,smsRole);
         smsRoleMapper.update(smsRole);
         //删除角色菜单权限
         smsRoleMenuMapper.deleteByRoleId(smsRole.getId());
         //添加角色菜单权限
-        for(Integer menuId:roleBaseDto.getMenuIdList()){
+        for(Integer menuId: smsRoleBase.getMenuIdList()){
             SmsRoleMenu smsRoleMenu =new SmsRoleMenu();
             smsRoleMenu.setRoleId(smsRole.getId());
             smsRoleMenu.setMenuId(menuId);

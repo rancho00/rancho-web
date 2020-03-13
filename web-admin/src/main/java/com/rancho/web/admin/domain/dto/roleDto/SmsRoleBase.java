@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 @Data
 @NotNull(message = "角色不能为空")
-public class RoleBaseDto {
+public class SmsRoleBase {
 
     @ApiModelProperty(value = "id")
     @Min(value = 1L,message = "id不能为空", groups = {Update.class})

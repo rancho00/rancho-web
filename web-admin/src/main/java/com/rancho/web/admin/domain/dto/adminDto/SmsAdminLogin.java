@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @NotNull(message = "登陆信息不能为空")
-public class AdminLoginDto {
+public class SmsAdminLogin {
 
     @ApiModelProperty(value = "用户名")
     @NotBlank(message = "用户名不能为空")

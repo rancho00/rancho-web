@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @NotNull(message = "管理员不能为空")
-public class AdminBaseDto {
+public class SmsAdminBase {
     @ApiModelProperty(value = "id")
     @Min(value = 1L,message = "id不能为空", groups = {Update.class})
     private Integer id;

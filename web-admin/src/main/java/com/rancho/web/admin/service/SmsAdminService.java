@@ -1,27 +1,27 @@
 package com.rancho.web.admin.service;
 
 import com.rancho.web.admin.domain.SmsAdmin;
-import com.rancho.web.admin.domain.dto.adminDto.AdminBaseDto;
-import com.rancho.web.admin.domain.dto.adminDto.AdminLoginDto;
+import com.rancho.web.admin.domain.dto.adminDto.SmsAdminBase;
+import com.rancho.web.admin.domain.dto.adminDto.SmsAdminLogin;
 import com.rancho.web.common.page.Page;
 
 import java.util.List;
 
 public interface SmsAdminService {
 
-    String login(AdminLoginDto adminLoginDto);
+    String login(SmsAdminLogin smsAdminLogin);
 
     List<SmsAdmin> list(SmsAdmin smsAdmin,Page page);
 
-    void save(AdminBaseDto adminBaseDto);
+    void save(SmsAdminBase smsAdminBase);
 
     SmsAdmin getById(Integer id);
 
-    void update(AdminBaseDto adminBaseDto);
+    void update(SmsAdminBase smsAdminBase);
 
     void updateStatus(Integer id,Integer status);
 
     SmsAdmin getByUsername(String username);
 
-    AdminBaseDto getAdminBaseDtoById(Integer id);
+    SmsAdminBase getAdminBaseDtoById(Integer id);
 }
