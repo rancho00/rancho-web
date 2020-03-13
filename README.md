@@ -8,8 +8,12 @@
 - [x] 角色
 - [x] 菜单
 - [x] 文件上传
-- [ ] 错误页面
-- [ ] 导出
+- [x] 401
+- [x] 404
+- [ ] 富文本
+- [ ] 拖拽Dialog
+- [ ] 导出Excel
+- [ ] 上传Excel
 # 功能预览
 ### 登陆页面
 ![](https://github.com/rancho00/rancho-web/blob/master/document/resource/login.png)
@@ -20,6 +24,8 @@
 ### 管理员页面
 ![](https://github.com/rancho00/rancho-web/blob/master/document/resource/admin.png)
 ### 角色页面
+![](https://github.com/rancho00/rancho-web/blob/master/document/resource/role.png)
+### 菜单页面
 ![](https://github.com/rancho00/rancho-web/blob/master/document/resource/role.png)
 # 技术选型
 ### 后端
