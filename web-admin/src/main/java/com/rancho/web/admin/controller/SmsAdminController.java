@@ -7,6 +7,7 @@ import com.rancho.web.admin.domain.SmsRole;
 import com.rancho.web.admin.domain.bo.AdminUserDetails;
 import com.rancho.web.admin.domain.dto.adminDto.AdminLoginDto;
 import com.rancho.web.admin.domain.dto.adminDto.AdminBaseDto;
+import com.rancho.web.admin.domain.dto.menu.SmsMenuNode;
 import com.rancho.web.admin.service.SmsAdminService;
 import com.rancho.web.admin.service.SmsMenuService;
 import com.rancho.web.admin.service.SmsRoleService;
@@ -76,11 +77,11 @@ public class SmsAdminController {
             smsRoleList = smsRoleService.listByAdminId(smsAdmin.getId());
         }
         //加载管理员菜单
-        List<SmsMenu> smsMenuList;
+        List<SmsMenuNode> smsMenuList;
         if("admin".equals(smsAdmin.getUsername())){
-            smsMenuList = smsMenuService.listHierarchy();
+            smsMenuList = smsMenuService.listTreeMenus();
         }else{
-            smsMenuList = smsMenuService.listAdminHierarchyMenus(smsAdmin.getId());
+            smsMenuList = smsMenuService.listAdminTreeMenus(smsAdmin.getId());
         }
         Map<String, Object> data = new HashMap<>();
         data.put("admin", smsAdmin);

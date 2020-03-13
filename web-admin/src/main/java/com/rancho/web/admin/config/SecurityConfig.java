@@ -112,9 +112,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //加载管理员菜单
                 List<SmsMenu> smsMenuList;
                 if("admin".equals(smsAdmin.getUsername())){
-                    smsMenuList = smsMenuService.listHierarchy();
+                    smsMenuList = smsMenuService.list(null,null);
                 }else{
-                    smsMenuList = smsMenuService.listAdminHierarchyMenus(smsAdmin.getId());
+                    smsMenuList = smsMenuService.listAdminMenus(smsAdmin.getId());
                 }
                 return new AdminUserDetails(smsAdmin, smsMenuList);
             }

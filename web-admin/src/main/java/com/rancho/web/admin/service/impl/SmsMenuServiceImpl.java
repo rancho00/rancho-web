@@ -1,17 +1,19 @@
 package com.rancho.web.admin.service.impl;
 
 import com.rancho.web.admin.domain.SmsMenu;
+import com.rancho.web.admin.domain.dto.menu.SmsMenuNode;
 import com.rancho.web.admin.mapper.SmsMenuMapper;
 import com.rancho.web.admin.mapper.SmsRoleMenuMapper;
 import com.rancho.web.admin.service.SmsMenuService;
 import com.rancho.web.common.base.BaseService;
 import com.rancho.web.common.common.CommonException;
 import com.rancho.web.common.page.Page;
-import com.rancho.web.common.page.PageInfo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SmsMenuServiceImpl extends BaseService implements SmsMenuService {
@@ -23,43 +25,26 @@ public class SmsMenuServiceImpl extends BaseService implements SmsMenuService {
     private SmsRoleMenuMapper smsRoleMenuMapper;
 
     @Override
-    public List<SmsMenu> listHierarchy() {
-        //查询目录
-        SmsMenu smsMenu =new SmsMenu();
-        smsMenu.setType(0);
-        List<SmsMenu> smsMenuList = smsMenuMapper.list(smsMenu);
-        //查询菜单
-        for(SmsMenu dir: smsMenuList){
-            smsMenu.setType(1);
-            smsMenu.setPid(dir.getId());
-            List<SmsMenu> menuList= smsMenuMapper.list(smsMenu);
-            dir.setSmsMenuList(menuList);
-            //查询菜单功能
-            for(SmsMenu menu:menuList){
-                smsMenu.setType(2);
-                smsMenu.setPid(menu.getId());
-                List<SmsMenu> permissionMenuList= smsMenuMapper.list(smsMenu);
-                menu.setSmsMenuList(permissionMenuList);
-            }
-        }
-        return smsMenuList;
+    public List<SmsMenuNode> listTreeMenus() {
+        List<SmsMenu> menuList= smsMenuMapper.list(null);
+        List<SmsMenuNode> menuNodeList=menuList.stream()
+                .filter(menu -> menu.getType().equals(0))
+                .map(menu -> covert(menu,menuList))
+                .collect(Collectors.toList());
+
+        return menuNodeList;
     }
 
     @Override
-    public List<SmsMenu> listAdminHierarchyMenus(Integer adminId) {
+    public List<SmsMenuNode> listAdminTreeMenus(Integer adminId) {
         //查询目录
-        List<SmsMenu> smsMenuList = smsMenuMapper.listAdminMenus(adminId,0,0);
-        //查询菜单
-        for(SmsMenu dir: smsMenuList){
-            List<SmsMenu> menuList= smsMenuMapper.listAdminMenus(adminId,1,dir.getId());
-            dir.setSmsMenuList(menuList);
-            //查询菜单功能
-            for(SmsMenu menu:menuList){
-                List<SmsMenu> permissionMenuList= smsMenuMapper.listAdminMenus(adminId,2,menu.getId());
-                menu.setSmsMenuList(permissionMenuList);
-            }
-        }
-        return smsMenuList;
+        List<SmsMenu> menuList = smsMenuMapper.listAdminMenus(adminId);
+        List<SmsMenuNode> menuNodeList=menuList.stream()
+                .filter(menu -> menu.getType().equals(0))
+                .map(menu -> covert(menu,menuList))
+                .collect(Collectors.toList());
+
+        return menuNodeList;
     }
 
     @Override
@@ -113,5 +98,27 @@ public class SmsMenuServiceImpl extends BaseService implements SmsMenuService {
     public List<SmsMenu> listRoleMenus(Integer roleId) {
         List<SmsMenu> smsMenuList = smsMenuMapper.listRoleMenus(roleId);
         return smsMenuList;
+    }
+
+    @Override
+    public List<SmsMenu> listAdminMenus(Integer adminId) {
+        return smsMenuMapper.listAdminMenus(adminId);
+    }
+
+
+    /**
+     *
+     * @param menu
+     * @param menuList
+     * @return
+     */
+    private SmsMenuNode covert(SmsMenu menu,List<SmsMenu> menuList){
+        SmsMenuNode node = new SmsMenuNode();
+        BeanUtils.copyProperties(menu,node);
+        List<SmsMenu> children = menuList.stream()
+                .filter(subMenu -> subMenu.getPid().equals(menu.getId()))
+                .map(subMenu -> covert(subMenu,menuList)).collect(Collectors.toList());
+        node.setChildren(children);
+        return node;
     }
 }

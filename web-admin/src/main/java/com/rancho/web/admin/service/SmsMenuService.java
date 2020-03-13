@@ -1,16 +1,21 @@
 package com.rancho.web.admin.service;
 
 import com.rancho.web.admin.domain.SmsMenu;
+import com.rancho.web.admin.domain.dto.menu.SmsMenuNode;
 import com.rancho.web.common.page.Page;
-import com.rancho.web.common.page.PageInfo;
 
 import java.util.List;
 
 public interface SmsMenuService {
 
-    List<SmsMenu> listHierarchy();
+    List<SmsMenuNode> listTreeMenus();
 
-    List<SmsMenu> listAdminHierarchyMenus(Integer adminId);
+    List<SmsMenuNode> listAdminTreeMenus(Integer adminId);
+
+    List<SmsMenu> listRoleMenus(Integer roleId);
+
+    List<SmsMenu> listAdminMenus(Integer adminId);
+
 
     List<SmsMenu> list(SmsMenu smsMenu, Page page);
 
@@ -23,6 +28,4 @@ public interface SmsMenuService {
     void delete(Integer id);
 
     SmsMenu getById(Integer id);
-
-    List<SmsMenu> listRoleMenus(Integer roleId);
 }

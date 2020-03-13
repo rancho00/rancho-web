@@ -10,5 +10,5 @@ public interface SmsMenuMapper extends BaseMapper<SmsMenu,Integer> {
 
     List<SmsMenu> listRoleMenus(@Param("roleId") Integer roleId);
 
-    List<SmsMenu> listAdminMenus(@Param("adminId") Integer adminId, @Param("type") Integer type, @Param("pid") Integer pid);
+    List<SmsMenu> listAdminMenus(@Param("adminId") Integer adminId);
 }

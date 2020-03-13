@@ -61,6 +61,4 @@ public class SmsMenu implements Serializable {
     @ApiModelProperty(value = "排序")
     @Min(value = 1, message = "排序不能为空",groups = {Insert.class, Update.class})
     private Integer sort;
-
-    private List<SmsMenu> smsMenuList;
 }

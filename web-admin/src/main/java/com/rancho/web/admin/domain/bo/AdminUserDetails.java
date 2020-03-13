@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * SpringSecurity需要的用户详情
@@ -24,17 +25,9 @@ public class AdminUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //返回当前用户的权限
-        List<SimpleGrantedAuthority> permission=new ArrayList<>();
-        for(SmsMenu dir: smsMenuList){
-            permission.add(new SimpleGrantedAuthority(dir.getValue()));
-            for(SmsMenu menu:dir.getSmsMenuList()){
-                permission.add(new SimpleGrantedAuthority(menu.getValue()));
-                for(SmsMenu permissionMenu:menu.getSmsMenuList()){
-                    permission.add(new SimpleGrantedAuthority(permissionMenu.getValue()));
-                }
-            }
-        }
-        return permission;
+        return  smsMenuList.stream().map(menu ->
+                        new SimpleGrantedAuthority(menu.getValue())
+                ).collect(Collectors.toList());
     }
 
     @Override

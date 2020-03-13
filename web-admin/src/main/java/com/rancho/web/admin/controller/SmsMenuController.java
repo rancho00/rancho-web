@@ -2,6 +2,7 @@ package com.rancho.web.admin.controller;
 
 import com.rancho.web.admin.domain.SmsMenu;
 import com.rancho.web.admin.domain.SmsRole;
+import com.rancho.web.admin.domain.dto.menu.SmsMenuNode;
 import com.rancho.web.admin.service.SmsMenuService;
 import com.rancho.web.common.page.Page;
 import com.rancho.web.common.page.PageInfo;
@@ -84,11 +85,11 @@ public class SmsMenuController {
     }
 
     @ApiOperation(value = "菜单层次列表")
-    @GetMapping("/hierarchyList")
+    @GetMapping("/treeMenuList")
     @ResponseBody
     @PreAuthorize("hasAuthority('menu:list')")
-    public  CommonResult<List<SmsMenu>> getHierarchyList() {
-        return CommonResult.success(smsMenuService.listHierarchy());
+    public  CommonResult<List<SmsMenuNode>> getTreeMenuList() {
+        return CommonResult.success(smsMenuService.listTreeMenus());
     }
 
 }
