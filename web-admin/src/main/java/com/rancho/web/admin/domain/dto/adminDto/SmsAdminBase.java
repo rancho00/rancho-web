@@ -26,7 +26,7 @@ public class SmsAdminBase {
     private String username;
 
     @ApiModelProperty(value = "密码")
-    @NotBlank(message = "密码不能为空")
+    //@NotBlank(message = "密码不能为空")
     private String password;
 
     @ApiModelProperty(value = "名称")

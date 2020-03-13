@@ -84,6 +84,7 @@ public class SmsAdminServiceImpl extends BaseService implements SmsAdminService 
             throw new CommonException("管理员已存在");
         }
         smsAdminBase.setPassword(new BCryptPasswordEncoder().encode("123456"));
+        admin=new SmsAdmin();
         BeanUtils.copyProperties(smsAdminBase,admin);
         adminMapper.save(admin);
         //添加角色
