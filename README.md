@@ -4,6 +4,12 @@
 # 演示地址
   http://123.57.164.79:8089/admin-web
 # 任务清单
+- [x] 管理员
+- [x] 角色
+- [x] 菜单
+- [x] 文件上传
+- [ ] 错误页面
+- [ ] 导出
 # 功能预览
 ### 登陆页面
 ![](https://github.com/rancho00/rancho-web/blob/master/document/resource/login.png)
