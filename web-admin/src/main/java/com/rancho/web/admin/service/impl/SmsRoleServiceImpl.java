@@ -26,7 +26,7 @@ public class SmsRoleServiceImpl extends BaseService implements SmsRoleService {
     @Autowired
     private SmsRoleMapper smsRoleMapper;
 
-    @Resource
+    @Autowired
     private SmsAdminRoleMapper smsAdminRoleMapper;
 
     @Autowired
