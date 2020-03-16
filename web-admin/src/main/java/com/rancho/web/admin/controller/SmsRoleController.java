@@ -1,5 +1,6 @@
 package com.rancho.web.admin.controller;
 
+import com.rancho.web.admin.annotation.Log;
 import com.rancho.web.admin.domain.SmsRole;
 import com.rancho.web.admin.domain.dto.roleDto.SmsRoleBase;
 import com.rancho.web.admin.service.SmsRoleService;
@@ -24,6 +25,7 @@ public class SmsRoleController {
     @Autowired
     private SmsRoleService smsRoleService;
 
+    @Log("查询角色")
     @ApiOperation(value = "角色列表")
     @GetMapping
     @ResponseBody
@@ -41,6 +43,7 @@ public class SmsRoleController {
         return CommonResult.success(smsRoleService.list(smsRole,null));
     }
 
+    @Log("添加角色")
     @ApiOperation(value = "添加角色")
     @PostMapping
     @ResponseBody
@@ -50,6 +53,7 @@ public class SmsRoleController {
         return CommonResult.success();
     }
 
+    @Log("查询角色详情")
     @ApiOperation(value = "获取角色详情")
     @GetMapping("/{id}")
     @ResponseBody
@@ -59,6 +63,7 @@ public class SmsRoleController {
         return CommonResult.success(smsRoleBase);
     }
 
+    @Log("更新角色")
     @ApiOperation(value = "更新角色")
     @PutMapping("/{id}")
     @ResponseBody
@@ -71,6 +76,7 @@ public class SmsRoleController {
         return CommonResult.success();
     }
 
+    @Log("删除角色")
     @ApiOperation(value = "删除角色")
     @DeleteMapping("/{id}")
     @ResponseBody

@@ -1,5 +1,6 @@
 package com.rancho.web.admin.controller;
 
+import com.rancho.web.admin.annotation.Log;
 import com.rancho.web.admin.domain.SmsMenu;
 import com.rancho.web.admin.domain.dto.menu.SmsMenuNode;
 import com.rancho.web.admin.service.SmsMenuService;
@@ -27,6 +28,7 @@ public class SmsMenuController {
     private SmsMenuService smsMenuService;
 
 
+    @Log("查询菜单")
     @ApiOperation(value = "菜单列表")
     @GetMapping
     @ResponseBody
@@ -35,6 +37,7 @@ public class SmsMenuController {
         return CommonResult.success(PageInfo.convertPage(smsMenuService.list(smsMenu,page)));
     }
 
+    @Log("添加菜单")
     @ApiOperation(value = "添加菜单")
     @PostMapping
     @ResponseBody
@@ -44,6 +47,7 @@ public class SmsMenuController {
         return CommonResult.success();
     }
 
+    @Log("查询菜单详情")
     @ApiOperation(value = "获取菜单详情")
     @GetMapping("/{id}")
     @ResponseBody
@@ -53,6 +57,7 @@ public class SmsMenuController {
         return CommonResult.success(smsMenu);
     }
 
+    @Log("更新菜单")
     @ApiOperation(value = "更新菜单")
     @PutMapping("/{id}")
     @ResponseBody
@@ -65,6 +70,7 @@ public class SmsMenuController {
         return CommonResult.success();
     }
 
+    @Log("更新菜单状态")
     @ApiOperation(value = "更新菜单状态")
     @PutMapping("/{id}/status")
     @ResponseBody
@@ -74,6 +80,7 @@ public class SmsMenuController {
         return CommonResult.success();
     }
 
+    @Log("删除菜单")
     @ApiOperation(value = "删除菜单")
     @DeleteMapping("/{id}")
     @ResponseBody

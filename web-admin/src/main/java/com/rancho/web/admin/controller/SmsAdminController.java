@@ -47,6 +47,7 @@ public class SmsAdminController {
     @Value("${jwt.tokenPrefix}")
     private String tokenPrefix;
 
+    @Log("管理员登陆")
     @ApiOperation(value = "登陆", notes = "登陆")
     @PostMapping("/login")
     @ResponseBody
@@ -105,6 +106,7 @@ public class SmsAdminController {
         return CommonResult.success(pageInfo);
     }
 
+    @Log("添加管理员")
     @ApiOperation(value = "添加管理员")
     @PostMapping
     @ResponseBody
@@ -114,7 +116,8 @@ public class SmsAdminController {
         return CommonResult.success();
     }
 
-    @ApiOperation(value = "获取管理员详情")
+    @Log("查询管理员详情")
+    @ApiOperation(value = "查询管理员详情")
     @GetMapping("/{id}")
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:detail')")
@@ -123,6 +126,7 @@ public class SmsAdminController {
         return CommonResult.success(smsAdminBase);
     }
 
+    @Log("更新管理员")
     @ApiOperation(value = "更新管理员")
     @PutMapping("/{id}")
     @ResponseBody
@@ -135,6 +139,7 @@ public class SmsAdminController {
         return CommonResult.success();
     }
 
+    @Log("修改管理员状态")
     @ApiOperation(value = "更新管理员状态")
     @PutMapping("/{id}/status")
     @ResponseBody
