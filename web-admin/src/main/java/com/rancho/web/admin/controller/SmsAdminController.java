@@ -1,5 +1,6 @@
 package com.rancho.web.admin.controller;
 
+import com.rancho.web.admin.annotation.Log;
 import com.rancho.web.admin.domain.SmsAdmin;
 import com.rancho.web.admin.domain.SmsRole;
 import com.rancho.web.admin.domain.bo.AdminUserDetails;
@@ -40,7 +41,6 @@ public class SmsAdminController {
 
     @Autowired
     private SmsRoleService smsRoleService;
-
 
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
@@ -95,6 +95,7 @@ public class SmsAdminController {
         return CommonResult.success(null);
     }
 
+    @Log("查询管理员")
     @ApiOperation("管理员列表")
     @GetMapping
     @ResponseBody

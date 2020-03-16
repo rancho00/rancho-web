@@ -65,5 +65,11 @@
             <artifactId>swagger-models</artifactId>
             <version>1.5.21</version>
         </dependency>
+        <!--工具包-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>[4.1.12,)</version>
+        </dependency>
     </dependencies>
 </project>

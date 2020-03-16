@@ -1,11 +1,12 @@
 # rancho-web
-  rancho-web项目是一个基于SpringBoot、MyBatis、SpringSecurity、Jwt等开发的一个最小管理后台，其中功能包括登陆、管理员管理、角色管理<br>
+  rancho-web项目是一个基于SpringBoot、MyBatis、SpringSecurity、Jwt等开发的一个最小管理后台，其中功能包括登陆、管理员管理、角色管理、菜单管理、日志管理等<br>
   前端项目源码：[https://github.com/rancho00/rancho-admin-web](https://github.com/rancho00/rancho-admin-web)
 # 演示地址
   http://123.57.164.79:8089/admin-web
 # 任务清单
 - [x] 管理员
 - [x] 角色
+- [x] 菜单
 - [x] 菜单
 - [x] 文件上传
 - [x] 401
@@ -40,6 +41,7 @@
 |Druid|管理数据库连接工具|
 |JWT|JWT登录|
 |Lombok|简化对象封装工具|
+|hutool|工具类|
 ### 前端
 |技术|说明|
 |:---|:---|
@@ -71,6 +73,7 @@
 * [Druid-常见问题](https://github.com/alibaba/druid/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
 ### 参考项目
 * [mall](https://github.com/macrozheng/mall)
+* [eladmin](https://github.com/elunez/eladmin)
 * [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)
 # 有问题欢迎issues
 # 联系我
