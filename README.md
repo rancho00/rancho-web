@@ -7,14 +7,22 @@
 - [x] 管理员
 - [x] 角色
 - [x] 菜单
-- [x] 日志
+- [x] 操作日志
+- [x] 错误日志
 - [x] 文件上传
+- [x] 接口文档
 - [x] 401
 - [x] 404
 - [ ] 富文本
 - [ ] 拖拽Dialog
 - [ ] 导出Excel
 - [ ] 上传Excel
+- [ ] 邮件发送
+- [ ] 定时任务
+- [ ] 在线用户
+- [ ] 服务监控
+- [ ] SQL监控
+
 # 功能预览
 ### 登陆页面
 ![](https://github.com/rancho00/rancho-web/blob/master/document/resource/login.png)
