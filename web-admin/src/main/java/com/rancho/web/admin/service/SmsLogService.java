@@ -13,4 +13,6 @@ public interface SmsLogService {
 
     @Async
     void save(String username, String browser, String ip, ProceedingJoinPoint joinPoint, SmsLog smsLog);
+
+    SmsLog getById(Integer id);
 }

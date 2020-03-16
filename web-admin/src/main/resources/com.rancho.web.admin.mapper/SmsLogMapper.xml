@@ -12,8 +12,11 @@
         <result column="address" jdbcType="VARCHAR" property="address" />
         <result column="browser" jdbcType="VARCHAR" property="browser" />
         <result column="time" jdbcType="BIGINT" property="time" />
-        <result column="exception_detail" jdbcType="VARCHAR" property="exceptionDetail" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    </resultMap>
+
+    <resultMap id="DetailResultMap" type="com.rancho.web.admin.domain.SmsLog" extends="BaseResultMap">
+        <result column="exception_detail" jdbcType="VARCHAR" property="exceptionDetail" />
     </resultMap>
 
     <select id="list" resultMap="BaseResultMap">
@@ -21,6 +24,9 @@
         <where>
             <if test="username!=null">
                 and username like CONCAT('%',#{username},'%')
+            </if>
+            <if test="logType!=null">
+                and log_type=#{logType}
             </if>
         </where>
     </select>
@@ -42,4 +48,8 @@
         now()
         )
     </insert>
+
+    <select id="getById" resultMap="DetailResultMap">
+        select * from sms_log where id=#{id}
+    </select>
 </mapper>

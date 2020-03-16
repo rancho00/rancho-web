@@ -78,4 +78,9 @@ public class LogServiceImpl extends BaseService implements SmsLogService {
         smsLog.setBrowser(browser);
         smsLogMapper.save(smsLog);
     }
+
+    @Override
+    public SmsLog getById(Integer id) {
+        return smsLogMapper.getById(id);
+    }
 }

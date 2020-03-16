@@ -39,7 +39,7 @@ public class SmsLog implements Serializable {
     private Long time;
 
     @ApiModelProperty(value = "异常详细")
-    private byte[] exceptionDetail;
+    private String exceptionDetail;
 
     @ApiModelProperty(value = "创建日期")
     private Date createTime;

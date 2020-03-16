@@ -66,7 +66,7 @@ public class LogAspect {
         SmsLog log = new SmsLog();
         log.setLogType("ERROR");
         log.setTime(System.currentTimeMillis() - currentTime);
-        log.setExceptionDetail(ThrowableUtil.getStackTrace(e).getBytes());
+        log.setExceptionDetail(ThrowableUtil.getStackTrace(e));
         HttpServletRequest request = RequestHolder.getHttpServletRequest();
         smsLogService.save(SecurityUtils.getUsername(), StringUtils.getBrowser(request), StringUtils.getIp(request), (ProceedingJoinPoint)joinPoint, log);
     }
