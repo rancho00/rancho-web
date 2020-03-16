@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rancho.web.admin.domain.SmsLog;
 import com.rancho.web.admin.mapper.SmsLogMapper;
 import com.rancho.web.admin.service.SmsLogService;
+import com.rancho.web.admin.util.StringUtils;
 import com.rancho.web.common.base.BaseService;
 import com.rancho.web.common.page.Page;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -70,7 +71,7 @@ public class LogServiceImpl extends BaseService implements SmsLogService {
                 e.printStackTrace();
             }
         }
-        //smsLog.setAddress(StringUtils.getCityInfo(smsLog.getRequestIp()));
+        smsLog.setAddress(StringUtils.getCityInfo(smsLog.getRequestIp()));
         smsLog.setMethod(methodName);
         smsLog.setUsername(username);
         smsLog.setParams(params.toString() + " }");
