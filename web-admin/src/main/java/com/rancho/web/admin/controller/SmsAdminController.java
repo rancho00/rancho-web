@@ -10,6 +10,7 @@ import com.rancho.web.admin.domain.dto.menu.SmsMenuNode;
 import com.rancho.web.admin.service.SmsAdminService;
 import com.rancho.web.admin.service.SmsMenuService;
 import com.rancho.web.admin.service.SmsRoleService;
+import com.rancho.web.admin.util.FileUtil;
 import com.rancho.web.common.page.Page;
 import com.rancho.web.common.page.PageInfo;
 import com.rancho.web.common.result.CommonResult;
@@ -24,9 +25,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
 
 @Api(value = "管理员管理", tags = "管理员管理")
 @Controller
@@ -149,4 +150,16 @@ public class SmsAdminController {
         return CommonResult.success();
     }
 
+
+    @ApiOperation("导出管理员")
+    @GetMapping("/download")
+    @ResponseBody
+    @PreAuthorize("hasAuthority('admin:list')")
+    public void download(SmsAdmin smsAdmin, Page page, HttpServletResponse response){
+        try {
+            smsAdminService.download(smsAdminService.list(smsAdmin,page),response);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }

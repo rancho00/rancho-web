@@ -8,6 +8,7 @@ import com.rancho.web.admin.mapper.SmsAdminMapper;
 import com.rancho.web.admin.mapper.SmsAdminRoleMapper;
 import com.rancho.web.admin.mapper.SmsMenuMapper;
 import com.rancho.web.admin.service.SmsAdminService;
+import com.rancho.web.admin.util.FileUtil;
 import com.rancho.web.admin.util.JwtTokenUtil;
 import com.rancho.web.common.base.BaseService;
 import com.rancho.web.common.common.CommonException;
@@ -26,9 +27,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -147,5 +148,18 @@ public class SmsAdminServiceImpl extends BaseService implements SmsAdminService 
         }
         smsAdminBase.setRoleIdList(roleIdList);
         return smsAdminBase;
+    }
+
+    @Override
+    public void download(List<SmsAdmin> smsAdminList, HttpServletResponse response) throws IOException {
+        List<Map<String, Object>> list = new ArrayList<>();
+        smsAdminList.stream().forEach(smsAdmin -> {
+            Map<String,Object> map = new LinkedHashMap<>();
+            map.put("ID",smsAdmin.getId());
+            map.put("用户",smsAdmin.getUsername());
+            map.put("状态",smsAdmin.getStatus()==0?"禁用":"启用");
+            list.add(map);
+        });
+        FileUtil.downloadExcel(list,response);
     }
 }

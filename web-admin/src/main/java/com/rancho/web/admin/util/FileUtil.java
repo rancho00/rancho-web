@@ -1,15 +1,19 @@
 package com.rancho.web.admin.util;
 
 import cn.hutool.core.codec.Base64;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.poi.excel.BigExcelWriter;
 import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
+import com.rancho.web.admin.domain.SmsAdmin;
 import org.springframework.web.multipart.MultipartFile;
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -167,22 +171,17 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
     /**
      * 导出excel
      */
-    public static void downloadExcel(List<Map<String, Object>> list, HttpServletResponse response) throws IOException {
+    public static void downloadExcel(List<Map<String,Object>> list, HttpServletResponse response) throws IOException {
         String tempPath =System.getProperty("java.io.tmpdir") + IdUtil.fastSimpleUUID() + ".xlsx";
-        File file = new File(tempPath);
-        BigExcelWriter writer= ExcelUtil.getBigWriter(file);
-        // 一次性写出内容，使用默认样式，强制输出标题
-        writer.write(list, true);
-        //response为HttpServletResponse对象
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
-        //test.xls是弹出下载对话框的文件名，不能为中文，中文请自行编码
-        response.setHeader("Content-Disposition","attachment;filename=file.xlsx");
-        ServletOutputStream out=response.getOutputStream();
-        // 终止后删除临时文件
-        file.deleteOnExit();
-        writer.flush(out, true);
-        //此处记得关闭输出Servlet流
-        IoUtil.close(out);
+        List rows = CollUtil.newArrayList(list);
+        ExcelWriter writer = ExcelUtil.getWriter();
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + new Date() + ".xls\"");
+        response.setContentType("application/octet-stream");
+        response.setCharacterEncoding("UTF-8");
+        OutputStream out = response.getOutputStream();
+        writer.write(rows, true);
+        writer.flush(out);
+        writer.close();
     }
 
     public static String getFileType(String type) {
