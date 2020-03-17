@@ -1,4 +1,4 @@
-package com.rancho.web.file.config;
+package com.rancho.web.tools.config;
 
 import lombok.Getter;
 import lombok.Setter;

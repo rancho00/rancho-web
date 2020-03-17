@@ -1,4 +1,4 @@
-package com.rancho.web.file.domain;
+package com.rancho.web.tools.domain;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

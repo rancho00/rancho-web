@@ -7,7 +7,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.rancho.web.admin","com.rancho.web.tools"})
 @MapperScan("com.rancho.web.admin.mapper")
 @EnableTransactionManagement
 public class AdminApplication extends SpringBootServletInitializer {

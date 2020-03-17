@@ -1,14 +1,12 @@
-package com.rancho.web.file.util;
+package com.rancho.web.tools.util;
 
-import com.rancho.web.file.config.SysCommonConfig;
+import com.rancho.web.tools.config.SysCommonConfig;
 import com.rancho.web.common.result.CommonResult;
-import com.rancho.web.common.util.StringUtils;
-import com.rancho.web.file.domain.FileVo;
+import com.rancho.web.tools.domain.FileVo;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.WebUtils;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
