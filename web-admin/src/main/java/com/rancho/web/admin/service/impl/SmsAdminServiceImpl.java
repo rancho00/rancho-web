@@ -14,6 +14,9 @@ import com.rancho.web.common.base.BaseService;
 import com.rancho.web.common.common.CommonException;
 import com.rancho.web.common.page.Page;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,8 +30,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Slf4j
@@ -153,11 +158,13 @@ public class SmsAdminServiceImpl extends BaseService implements SmsAdminService 
     @Override
     public void download(List<SmsAdmin> smsAdminList, HttpServletResponse response) throws IOException {
         List<Map<String, Object>> list = new ArrayList<>();
-        smsAdminList.stream().forEach(smsAdmin -> {
+        smsAdminList.forEach(smsAdmin -> {
             Map<String,Object> map = new LinkedHashMap<>();
             map.put("ID",smsAdmin.getId());
             map.put("用户",smsAdmin.getUsername());
+            map.put("昵称",smsAdmin.getNickname());
             map.put("状态",smsAdmin.getStatus()==0?"禁用":"启用");
+            map.put("昵称",smsAdmin.getCreateTime());
             list.add(map);
         });
         FileUtil.downloadExcel(list,response);
