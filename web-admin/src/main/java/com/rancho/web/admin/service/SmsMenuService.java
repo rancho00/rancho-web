@@ -16,7 +16,6 @@ public interface SmsMenuService {
 
     List<SmsMenu> listAdminMenus(Integer adminId);
 
-
     List<SmsMenu> list(SmsMenu smsMenu, Page page);
 
     void save(SmsMenu smsMenu);

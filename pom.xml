@@ -17,6 +17,8 @@
 
     <modules>
         <module>web-admin</module>
+        <module>web-api</module>
+        <module>web-tools</module>
     </modules>
 
     <dependencies>

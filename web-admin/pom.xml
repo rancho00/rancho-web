@@ -22,7 +22,7 @@
             <artifactId>web-common</artifactId>
             <version>1.0.0</version>
         </dependency>
-        <!-- web.tools -->
+        <!-- web-tools -->
         <dependency>
             <groupId>com.rancho.web</groupId>
             <artifactId>web-tools</artifactId>
