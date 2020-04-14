@@ -3,7 +3,7 @@ package com.rancho.web.admin.domain;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 @Data
 public class SmsLog implements Serializable {
