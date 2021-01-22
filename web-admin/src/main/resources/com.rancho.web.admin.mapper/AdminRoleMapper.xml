@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rancho.web.admin.mapper.AdminRoleMapper">
+  <resultMap id="BaseResultMap" type="com.rancho.web.admin.domain.AdminRole">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="admin_id" jdbcType="INTEGER" property="adminId" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+ <select id="countByRoleId" resultType="int">
+   select count(0) from admin_role where role_id=#{roleId}
+ </select>
+    <insert id="addAdminRole" parameterType="com.rancho.web.admin.domain.AdminRole">
+        insert into admin_role (admin_id,role_id,create_time) values (#{adminId},#{roleId},#{createTime})
+    </insert>
+
+    <select id="getAdminRoles" resultMap="BaseResultMap">
+        select * from admin_role
+        <where>
+            <if test="adminId!=null">
+                and admin_id=#{adminId}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteByAdminId">
+        delete from admin_role where admin_id=#{adminId}
+    </delete>
+</mapper>

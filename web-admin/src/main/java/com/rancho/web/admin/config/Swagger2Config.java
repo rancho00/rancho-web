@@ -29,7 +29,7 @@ public class Swagger2Config {
     public Docket tokenApi(){
         List<ResponseMessage> responseMessageList = new ArrayList<>();
         for(ResultCode resultCodes: ResultCode.values()){
-            responseMessageList.add(new ResponseMessageBuilder().code((int)resultCodes.getCode()).message(resultCodes.getMessage()).build());
+            //responseMessageList.add(new ResponseMessageBuilder().code((int)resultCodes.getCode()).message(resultCodes.getMessage()).build());
         }
         return new Docket(DocumentationType.SWAGGER_2)
                 .globalResponseMessage(RequestMethod.GET, responseMessageList)

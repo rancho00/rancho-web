@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rancho.web.admin.mapper.LogMapper">
+    <resultMap id="BaseResultMap" type="com.rancho.web.admin.domain.Log">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="method" jdbcType="VARCHAR" property="method" />
+        <result column="params" jdbcType="VARCHAR" property="params" />
+        <result column="log_type" jdbcType="VARCHAR" property="logType" />
+        <result column="request_ip" jdbcType="VARCHAR" property="requestIp" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="browser" jdbcType="VARCHAR" property="browser" />
+        <result column="time" jdbcType="BIGINT" property="time" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    </resultMap>
+
+    <resultMap id="DetailResultMap" type="com.rancho.web.admin.domain.Log" extends="BaseResultMap">
+        <result column="exception_detail" jdbcType="VARCHAR" property="exceptionDetail" />
+    </resultMap>
+
+    <select id="getLogs" resultMap="BaseResultMap">
+        select * from log
+        <where>
+            <if test="username!=null">
+                and username like CONCAT('%',#{username},'%')
+            </if>
+            <if test="logType!=null">
+                and log_type=#{logType}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addLog" parameterType="com.rancho.web.admin.domain.Log">
+        insert into log (username,description,method,params,log_type,request_ip,address,browser,`time`,exception_detail,create_time)
+        values
+        (
+        #{username},
+        #{description},
+        #{method},
+        #{params},
+        #{logType},
+        #{requestIp},
+        #{address},
+        #{browser},
+        #{time},
+        #{exceptionDetail},
+        now()
+        )
+    </insert>
+
+    <select id="getLog" resultMap="DetailResultMap">
+        select * from log where id=#{id}
+    </select>
+</mapper>

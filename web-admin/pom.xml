@@ -22,12 +22,6 @@
             <artifactId>web-common</artifactId>
             <version>1.0.0</version>
         </dependency>
-        <!-- web-tools -->
-        <dependency>
-            <groupId>com.rancho.web</groupId>
-            <artifactId>web-tools</artifactId>
-            <version>1.0.0</version>
-        </dependency>
         <!--springboot-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

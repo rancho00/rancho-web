@@ -3,15 +3,13 @@ package com.rancho.web.admin.config;
 import com.rancho.web.admin.component.JwtAuthenticationTokenFilter;
 import com.rancho.web.admin.component.RestAuthenticationEntryPoint;
 import com.rancho.web.admin.component.RestfulAccessDeniedHandler;
-import com.rancho.web.admin.domain.SmsAdmin;
-import com.rancho.web.admin.domain.SmsMenu;
+import com.rancho.web.admin.domain.Admin;
+import com.rancho.web.admin.domain.Menu;
 import com.rancho.web.admin.domain.bo.AdminUserDetails;
-import com.rancho.web.admin.service.SmsAdminService;
-import com.rancho.web.admin.service.SmsMenuService;
-import com.rancho.web.admin.service.SmsRoleService;
+import com.rancho.web.admin.service.AdminService;
+import com.rancho.web.admin.service.MenuService;
 import com.rancho.web.common.common.CommonException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -35,127 +33,128 @@ import java.util.List;
 
 
 
-@Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled=true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private SmsAdminService smsAdminService;
-    @Autowired
-    private SmsMenuService smsMenuService;
-    @Autowired
-    private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
-    @Autowired
-    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
-
-    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf()
-                .disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.GET, // 允许对于网站静态资源的无授权访问
-                        "/",
-                        "/*.html",
-                        "/favicon.ico",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js",
-                        "/swagger-resources/**",
-                        "/v2/api-docs/**"
-                )
-                .permitAll()
-                .antMatchers("/admin/login")
-                .permitAll()
-                .antMatchers("/druid/**")
-                .permitAll()
-                .antMatchers("/file/**")
-                .permitAll()
-                .antMatchers(HttpMethod.OPTIONS)
-                .permitAll()
-                .anyRequest()
-                .authenticated();
-        //禁用缓存
-        httpSecurity.headers().cacheControl();
-        //允许iframe
-        httpSecurity.headers().frameOptions().disable();
-        httpSecurity.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-        //添加自定义未授权和未登录结果返回
-        httpSecurity.exceptionHandling()
-                .accessDeniedHandler(restfulAccessDeniedHandler)
-                .authenticationEntryPoint(restAuthenticationEntryPoint);
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService())
-                .passwordEncoder(passwordEncoder());
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    public static void main(String[] args) {
-        String pass = "rancho123456";
-        BCryptPasswordEncoder encode = new BCryptPasswordEncoder();
-        String hashPass = encode.encode(pass);
-        System.out.println(hashPass);
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        //获取登录用户信息
-        return username -> {
-            SmsAdmin smsAdmin = smsAdminService.getByUsername(username);
-            if (smsAdmin != null) {
-                if(smsAdmin.getStatus()==0){
-                    throw new CommonException("账号已被停用");
-                }
-                //加载管理员菜单
-                List<SmsMenu> smsMenuList;
-                if("admin".equals(smsAdmin.getUsername())){
-                    smsMenuList = smsMenuService.list(null,null);
-                }else{
-                    smsMenuList = smsMenuService.listAdminMenus(smsAdmin.getId());
-                }
-                return new AdminUserDetails(smsAdmin, smsMenuList);
-            }
-            throw new UsernameNotFoundException("用户名或密码错误");
-        };
-    }
-
-    @Bean
-    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(){
-        return new JwtAuthenticationTokenFilter();
-    }
-
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-
-    /**
-     * 允许跨域调用的过滤器
-     */
-    @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration config = new CorsConfiguration();
-        //允许所有域名进行跨域调用
-        config.addAllowedOrigin("*");
-        //允许跨越发送cookie
-        config.setAllowCredentials(true);
-        //放行全部原始头信息
-        config.addAllowedHeader("*");
-        //允许所有请求方法跨域调用
-        config.addAllowedMethod("*");
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
-}
+//@Configuration
+//@EnableWebSecurity
+//@EnableGlobalMethodSecurity(prePostEnabled=true)
+//public class SecurityConfig extends WebSecurityConfigurerAdapter {
+//    @Autowired
+//    private AdminService adminService;
+//    @Autowired
+//    private MenuService menuService;
+//    @Autowired
+//    private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
+//    @Autowired
+//    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+//
+//    @Override
+//    protected void configure(HttpSecurity httpSecurity) throws Exception {
+//        httpSecurity.csrf()
+//                .disable()
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .authorizeRequests()
+//                .antMatchers(HttpMethod.GET, // 允许对于网站静态资源的无授权访问
+//                        "/",
+//                        "/*.html",
+//                        "/favicon.ico",
+//                        "/**/*.html",
+//                        "/**/*.css",
+//                        "/**/*.js",
+//                        "/swagger-resources/**",
+//                        "/v2/api-docs/**"
+//                )
+//                .permitAll()
+//                .antMatchers("/admin/login")
+//                .permitAll()
+//                .antMatchers("/druid/**")
+//                .permitAll()
+//                .antMatchers("/file/**")
+//                .permitAll()
+//                .antMatchers(HttpMethod.OPTIONS)
+//                .permitAll()
+//                .anyRequest()
+//                .authenticated();
+//        //禁用缓存
+//        httpSecurity.headers().cacheControl();
+//        //允许iframe
+//        httpSecurity.headers().frameOptions().disable();
+//        httpSecurity.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+//        //添加自定义未授权和未登录结果返回
+//        httpSecurity.exceptionHandling()
+//                .accessDeniedHandler(restfulAccessDeniedHandler)
+//                .authenticationEntryPoint(restAuthenticationEntryPoint);
+//    }
+//
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(userDetailsService())
+//                .passwordEncoder(passwordEncoder());
+//    }
+//
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
+//
+//    public static void main(String[] args) {
+//        String pass = "rancho123456";
+//        BCryptPasswordEncoder encode = new BCryptPasswordEncoder();
+//        String hashPass = encode.encode(pass);
+//        System.out.println(hashPass);
+//    }
+//
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+////        //获取登录用户信息
+////        return username -> {
+////            Admin admin = adminService.getByUsername(username);
+////            if (admin != null) {
+////                if(admin.getStatus()==0){
+////                    throw new CommonException("账号已被停用");
+////                }
+////                //加载管理员菜单
+////                List<Menu> menuList;
+////                if("admin".equals(admin.getUsername())){
+////                    menuList = menuService.list(null,null);
+////                }else{
+////                    menuList = menuService.listAdminMenus(admin.getId());
+////                }
+////                return new AdminUserDetails(admin, menuList);
+////            }
+////            throw new UsernameNotFoundException("用户名或密码错误");
+////        };
+//        return null;
+//    }
+//
+//    @Bean
+//    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(){
+//        return new JwtAuthenticationTokenFilter();
+//    }
+//
+//    @Bean
+//    @Override
+//    public AuthenticationManager authenticationManagerBean() throws Exception {
+//        return super.authenticationManagerBean();
+//    }
+//
+//
+//    /**
+//     * 允许跨域调用的过滤器
+//     */
+//    @Bean
+//    public CorsFilter corsFilter() {
+//        CorsConfiguration config = new CorsConfiguration();
+//        //允许所有域名进行跨域调用
+//        config.addAllowedOrigin("*");
+//        //允许跨越发送cookie
+//        config.setAllowCredentials(true);
+//        //放行全部原始头信息
+//        config.addAllowedHeader("*");
+//        //允许所有请求方法跨域调用
+//        config.addAllowedMethod("*");
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", config);
+//        return new CorsFilter(source);
+//    }
+//}

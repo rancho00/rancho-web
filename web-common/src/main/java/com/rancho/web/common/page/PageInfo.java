@@ -20,7 +20,7 @@ public class PageInfo<T> {
     private Integer totalPage;
     @ApiModelProperty(value = "总条数")
     private Long total;
-    @ApiModelProperty(value = "数据")
+    @ApiModelProperty(value = "list")
     private List<T> list;
 
     /**

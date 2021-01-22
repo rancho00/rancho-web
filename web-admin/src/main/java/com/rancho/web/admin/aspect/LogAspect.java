@@ -1,7 +1,7 @@
 package com.rancho.web.admin.aspect;
 
-import com.rancho.web.admin.domain.SmsLog;
-import com.rancho.web.admin.service.SmsLogService;
+import com.rancho.web.admin.domain.Log;
+import com.rancho.web.admin.service.LogService;
 import com.rancho.web.admin.util.RequestHolder;
 import com.rancho.web.admin.util.SecurityUtils;
 import com.rancho.web.admin.util.StringUtils;
@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 public class LogAspect {
 
     @Autowired
-    private SmsLogService smsLogService;
+    private LogService logService;
 
     private long currentTime = 0L;
 
@@ -47,11 +47,11 @@ public class LogAspect {
         Object result;
         currentTime = System.currentTimeMillis();
         result = joinPoint.proceed();
-        SmsLog log = new SmsLog();
+        Log log = new Log();
         log.setLogType("INFO");
         log.setTime(System.currentTimeMillis() - currentTime);
         HttpServletRequest request = RequestHolder.getHttpServletRequest();
-        smsLogService.save(SecurityUtils.getUsername(), StringUtils.getBrowser(request), StringUtils.getIp(request),joinPoint, log);
+        logService.addLog(SecurityUtils.getUsername(), StringUtils.getBrowser(request), StringUtils.getIp(request),joinPoint, log);
         return result;
     }
 
@@ -63,12 +63,12 @@ public class LogAspect {
      */
     @AfterThrowing(pointcut = "logPointcut()", throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
-        SmsLog log = new SmsLog();
+        Log log = new Log();
         log.setLogType("ERROR");
         log.setTime(System.currentTimeMillis() - currentTime);
         log.setExceptionDetail(ThrowableUtil.getStackTrace(e));
         HttpServletRequest request = RequestHolder.getHttpServletRequest();
-        smsLogService.save(SecurityUtils.getUsername(), StringUtils.getBrowser(request), StringUtils.getIp(request), (ProceedingJoinPoint)joinPoint, log);
+        logService.addLog(SecurityUtils.getUsername(), StringUtils.getBrowser(request), StringUtils.getIp(request), (ProceedingJoinPoint)joinPoint, log);
     }
 
 }

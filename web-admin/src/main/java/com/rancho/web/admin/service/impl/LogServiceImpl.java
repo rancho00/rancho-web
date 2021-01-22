@@ -1,11 +1,11 @@
 package com.rancho.web.admin.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.rancho.web.admin.domain.SmsLog;
-import com.rancho.web.admin.mapper.SmsLogMapper;
-import com.rancho.web.admin.service.SmsLogService;
+import com.github.pagehelper.PageHelper;
+import com.rancho.web.admin.domain.Log;
+import com.rancho.web.admin.mapper.LogMapper;
+import com.rancho.web.admin.service.LogService;
 import com.rancho.web.admin.util.StringUtils;
-import com.rancho.web.common.base.BaseService;
 import com.rancho.web.common.page.Page;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -23,20 +23,20 @@ import java.util.List;
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
-public class LogServiceImpl extends BaseService implements SmsLogService {
+public class LogServiceImpl implements LogService {
 
     @Autowired
-    private SmsLogMapper smsLogMapper;
+    private LogMapper logMapper;
 
     @Override
-    public List<SmsLog> list(SmsLog smsLog, Page page) {
-        setPage(page);
-        return smsLogMapper.list(smsLog);
+    public List<Log> getLogs(Log log, Page page) {
+        PageHelper.startPage(page.getPageNumber(),page.getPageSize());
+        return logMapper.getLogs(log);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void save(String username, String browser, String ip, ProceedingJoinPoint joinPoint, SmsLog smsLog){
+    public void addLog(String username, String browser, String ip, ProceedingJoinPoint joinPoint, Log log){
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
@@ -56,11 +56,11 @@ public class LogServiceImpl extends BaseService implements SmsLogService {
             }
         }
         // 描述
-        if (smsLog != null) {
-            smsLog.setDescription(aopLog.value());
+        if (log != null) {
+            log.setDescription(aopLog.value());
         }
-        assert smsLog != null;
-        smsLog.setRequestIp(ip);
+        assert log != null;
+        log.setRequestIp(ip);
 
         String LOGINPATH = "login";
         if(LOGINPATH.equals(signature.getName())){
@@ -71,16 +71,16 @@ public class LogServiceImpl extends BaseService implements SmsLogService {
                 e.printStackTrace();
             }
         }
-        smsLog.setAddress(StringUtils.getCityInfo(smsLog.getRequestIp()));
-        smsLog.setMethod(methodName);
-        smsLog.setUsername(username);
-        smsLog.setParams(params.toString() + " }");
-        smsLog.setBrowser(browser);
-        smsLogMapper.save(smsLog);
+        log.setAddress(StringUtils.getCityInfo(log.getRequestIp()));
+        log.setMethod(methodName);
+        log.setUsername(username);
+        log.setParams(params.toString() + " }");
+        log.setBrowser(browser);
+        logMapper.addLog(log);
     }
 
     @Override
-    public SmsLog getById(Integer id) {
-        return smsLogMapper.getById(id);
+    public Log getLog(Integer id) {
+        return logMapper.getLog(id);
     }
 }

@@ -33,34 +33,34 @@ public class RestExceptionHandler {
      * @param e
      * @return
      */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public CommonResult handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        String errorMsg = e.getBindingResult().getAllErrors()
-                .stream()
-                .map(objectError -> ((FieldError)objectError).getDefaultMessage())
-                .collect(Collectors.joining(","));
-        return CommonResult.failed(errorMsg);
-    }
-
-
-    /**
-     * 处理CustomException异常
-     * @param commonException
-     * @return
-     */
-    @ExceptionHandler(CommonException.class)
-    public CommonResult handleCustomException(CommonException commonException){
-        return CommonResult.failed(commonException.getMessage());
-    }
-
-    /**
-     * 处理NotLoginException异常
-     * @param notLoginException
-     * @return
-     */
-    @ExceptionHandler(NotLoginException.class)
-    public CommonResult handleNotLoginException(NotLoginException notLoginException){
-        return CommonResult.unauthorized(null);
-    }
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public CommonResult handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+//        String errorMsg = e.getBindingResult().getAllErrors()
+//                .stream()
+//                .map(objectError -> ((FieldError)objectError).getDefaultMessage())
+//                .collect(Collectors.joining(","));
+//        return CommonResult.failed(errorMsg);
+//    }
+//
+//
+//    /**
+//     * 处理CustomException异常
+//     * @param commonException
+//     * @return
+//     */
+//    @ExceptionHandler(CommonException.class)
+//    public CommonResult handleCustomException(CommonException commonException){
+//        return CommonResult.failed(commonException.getMessage());
+//    }
+//
+//    /**
+//     * 处理NotLoginException异常
+//     * @param notLoginException
+//     * @return
+//     */
+//    @ExceptionHandler(NotLoginException.class)
+//    public CommonResult handleNotLoginException(NotLoginException notLoginException){
+//        return CommonResult.unauthorized(null);
+//    }
 
 }

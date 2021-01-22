@@ -20,7 +20,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
-        response.getWriter().println(JSON.toJSON(CommonResult.unauthorized(e.getMessage())));
+        //response.getWriter().println(JSON.toJSON(CommonResult.unauthorized(e.getMessage())));
         response.getWriter().flush();
     }
 }

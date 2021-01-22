@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rancho.web.admin.mapper.RoleMapper">
+    <resultMap id="BaseResultMap" type="com.rancho.web.admin.domain.Role">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    </resultMap>
+
+    <select id="listByAdminId" resultMap="BaseResultMap">
+        select sr.* from sms_role sr join sms_admin_role sar on sr.id=sar.role_id where sar.admin_id=#{adminId}
+    </select>
+
+    <select id="getRoles" resultMap="BaseResultMap" parameterType="com.rancho.web.admin.domain.Role">
+        select * from role
+        <where>
+            <if test="status!=null">
+                and status=#{status}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addRole" parameterType="com.rancho.web.admin.domain.Admin" useGeneratedKeys="true" keyProperty="id">
+        insert into role (name,description,status,create_time) values (#{name},#{description},#{status},now())
+    </insert>
+
+    <select id="getRole" resultMap="BaseResultMap">
+        select * from role where id=#{id}
+    </select>
+
+    <update id="updateRole" parameterType="com.rancho.web.admin.domain.Role">
+        update role
+        <set>
+            <if test="name!=null">
+                name=#{name},
+            </if>
+            <if test="description!=null">
+                description=#{description},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="deleteRole">
+        delete from role where id=#{id}
+    </delete>
+</mapper>
