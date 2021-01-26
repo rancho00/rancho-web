@@ -1,31 +1,31 @@
 package com.rancho.web.admin.service;
 
+import com.rancho.web.admin.domain.Admin;
 import com.rancho.web.admin.domain.Menu;
 import com.rancho.web.admin.domain.dto.menu.MenuCreate;
 import com.rancho.web.admin.domain.dto.menu.MenuNode;
-import com.rancho.web.common.page.Page;
+import com.rancho.web.admin.domain.dto.menu.MenuParam;
+import com.rancho.web.admin.domain.dto.menu.MenuUpdate;
+import com.rancho.web.admin.domain.vo.RouteVo;
 
 import java.util.List;
+import java.util.Set;
 
 public interface MenuService {
 
     List<MenuNode> getTreeMenus();
 
-    List<MenuNode> getAdminTreeMenus(Integer adminId);
-
-    List<Menu> getRoleMenus(Integer roleId);
-
-    List<Menu> getAdminMenus(Integer adminId);
-
-    List<Menu> getMenus(Menu menu, Page page);
-
     void addMenu(MenuCreate menuCreate);
 
-    void updateMenu(Integer id, Menu menu);
+    Menu getMenu(Integer id);
 
-    void updateMenuStatus(Integer id,Integer status);
+    void updateMenu(Integer id, MenuUpdate menuUpdate);
 
     void deleteMenu(Integer id);
 
-    Menu getMenu(Integer id);
+    List<MenuNode> getAdminTreeMenus(Admin admin);
+
+    Set<String> getAdminMenuPermissions(Admin admin);
+
+    List<RouteVo> menuCovertRoute(List<MenuNode> menuNodes);
 }

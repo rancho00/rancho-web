@@ -3,12 +3,10 @@ package com.rancho.web.admin.domain;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 @Data
-public class Admin implements Serializable {
+public class Admin{
     @ApiModelProperty(value = "id")
     private Integer id;
 
@@ -33,7 +31,7 @@ public class Admin implements Serializable {
     @ApiModelProperty(value = "状态（0：停用，1：正常）")
     private Integer status;
 
-    @ApiModelProperty(value = "角色")
-    private List<Role> roleList;
+    @ApiModelProperty(value = "类型")
+    private String type;
 
 }

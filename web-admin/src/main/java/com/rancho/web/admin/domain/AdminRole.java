@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class AdminRole implements Serializable {
+public class AdminRole{
     @ApiModelProperty(value = "id")
     private Integer id;
 

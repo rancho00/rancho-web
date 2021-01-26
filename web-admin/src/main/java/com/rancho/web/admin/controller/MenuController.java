@@ -4,6 +4,8 @@ import com.rancho.web.admin.annotation.Log;
 import com.rancho.web.admin.domain.Menu;
 import com.rancho.web.admin.domain.dto.menu.MenuCreate;
 import com.rancho.web.admin.domain.dto.menu.MenuNode;
+import com.rancho.web.admin.domain.dto.menu.MenuParam;
+import com.rancho.web.admin.domain.dto.menu.MenuUpdate;
 import com.rancho.web.admin.service.MenuService;
 import com.rancho.web.common.page.Page;
 import com.rancho.web.common.page.PageInfo;
@@ -30,12 +32,12 @@ public class MenuController {
     private MenuService menuService;
 
     @Log("查询菜单")
-    @ApiOperation(value = "菜单列表")
-    @GetMapping
+    @ApiOperation(value = "菜单层次列表")
+    @GetMapping("/treeMenus")
     @ResponseBody
     @PreAuthorize("hasAuthority('menu:list')")
-    public ResponseEntity<CommonResult<PageInfo<Menu>>> getMenus(Menu menu, Page page) {
-        return ResponseEntity.ok(new CommonResult().ok(PageInfo.convertPage(menuService.getMenus(menu,page))));
+    public ResponseEntity<CommonResult<List<MenuNode>>> getTreeMenus() {
+        return ResponseEntity.ok(new CommonResult().ok(menuService.getTreeMenus()));
     }
 
     @Log("添加菜单")
@@ -63,18 +65,8 @@ public class MenuController {
     @PutMapping("/{id}")
     @ResponseBody
     @PreAuthorize("hasAuthority('menu:update')")
-    public ResponseEntity<CommonResult> updateMenu( @PathVariable Integer id,@Validated(Update.class) @RequestBody Menu menu) {
-        menuService.updateMenu(id, menu);
-        return ResponseEntity.ok(new CommonResult().ok());
-    }
-
-    @Log("更新菜单状态")
-    @ApiOperation(value = "更新菜单状态")
-    @PutMapping("/{id}/status")
-    @ResponseBody
-    @PreAuthorize("hasAuthority('menu:updateStatus')")
-    public ResponseEntity<CommonResult> updateMenuStatus( @PathVariable Integer id,Integer status) {
-        menuService.updateMenuStatus(id,status);
+    public ResponseEntity<CommonResult> updateMenu( @PathVariable Integer id,@Validated @RequestBody MenuUpdate menuUpdate) {
+        menuService.updateMenu(id, menuUpdate);
         return ResponseEntity.ok(new CommonResult().ok());
     }
 
@@ -86,14 +78,6 @@ public class MenuController {
     public ResponseEntity<CommonResult> deleteMenu(@PathVariable Integer id) {
         menuService.deleteMenu(id);
         return ResponseEntity.ok(new CommonResult().ok());
-    }
-
-    @ApiOperation(value = "菜单层次列表")
-    @GetMapping("/treeMenuList")
-    @ResponseBody
-    @PreAuthorize("hasAuthority('menu:list')")
-    public ResponseEntity<CommonResult<List<MenuNode>>> getTreeMenuList() {
-        return ResponseEntity.ok(new CommonResult().ok(menuService.getTreeMenus()));
     }
 
 }

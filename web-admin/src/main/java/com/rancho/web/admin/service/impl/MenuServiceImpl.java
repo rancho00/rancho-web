@@ -1,18 +1,26 @@
 package com.rancho.web.admin.service.impl;
 
+import com.rancho.web.admin.domain.Admin;
 import com.rancho.web.admin.domain.Menu;
 import com.rancho.web.admin.domain.dto.menu.MenuCreate;
 import com.rancho.web.admin.domain.dto.menu.MenuNode;
+import com.rancho.web.admin.domain.dto.menu.MenuParam;
+import com.rancho.web.admin.domain.dto.menu.MenuUpdate;
+import com.rancho.web.admin.domain.vo.MetaVo;
+import com.rancho.web.admin.domain.vo.RouteVo;
 import com.rancho.web.admin.mapper.MenuMapper;
 import com.rancho.web.admin.mapper.RoleMenuMapper;
 import com.rancho.web.admin.service.MenuService;
 import com.rancho.web.common.common.CommonException;
-import com.rancho.web.common.page.Page;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,84 +34,72 @@ public class MenuServiceImpl  implements MenuService {
 
     @Override
     public List<MenuNode> getTreeMenus() {
-        List<Menu> menuList= null;//menuMapper.list(null);
+        List<Menu> menuList= menuMapper.getMenus(null);
         List<MenuNode> menuNodeList=menuList.stream()
                 .filter(menu -> menu.getType().equals(0))
                 .map(menu -> covert(menu,menuList))
                 .collect(Collectors.toList());
-
         return menuNodeList;
-    }
-
-    @Override
-    public List<MenuNode> getAdminTreeMenus(Integer adminId) {
-        //查询目录
-        List<Menu> menuList = menuMapper.listAdminMenus(adminId);
-        List<MenuNode> menuNodeList=menuList.stream()
-                .filter(menu -> menu.getType().equals(0))
-                .map(menu -> covert(menu,menuList))
-                .collect(Collectors.toList());
-
-        return menuNodeList;
-    }
-
-    @Override
-    public List<Menu> getMenus(Menu menu, Page page) {
-        //setPage(page);
-        List<Menu> menuList = null;//menuMapper.list(menu);
-        return menuList;
     }
 
     @Override
     public void addMenu(MenuCreate menuCreate) {
-        //menuMapper.save(menu);
-    }
-
-    @Override
-    public void updateMenu(Integer id, Menu menu) {
-        //menuMapper.update(menu);
-    }
-
-    @Override
-    public void updateMenuStatus(Integer id, Integer status) {
-        //查询是否关联角色
-        int roleMenuCount= roleMenuMapper.countByMenuId(id);
-        if(roleMenuCount>0){
-            throw new CommonException("菜单关联了角色，请先解除关联关系！");
+        Menu menu=new Menu();
+        BeanUtils.copyProperties(menuCreate,menu);
+        if(menu.getType()==0){
+            menu.setComponent("Layout");
         }
-        //修改状态
-        Menu menu =new Menu();
-        menu.setId(id);
-        menu.setStatus(status);
-        //menuMapper.update(menu);
-    }
-
-    @Override
-    public void deleteMenu(Integer id) {
-        //查询是否关联角色
-        int roleMenuCount= roleMenuMapper.countByMenuId(id);
-        if(roleMenuCount>0){
-            throw new CommonException("菜单关联了角色，请先解除关联关系！");
+        if(menu.getType()==2){
+            menu.setIsHidden(1);
+        }else{
+            menu.setIsHidden(0);
         }
-        //删除
-        //menuMapper.delete(id);
+        menuMapper.addMenu(menu);
     }
 
     @Override
     public Menu getMenu(Integer id) {
-        //return menuMapper.getById(id);
-        return null;
+        return menuMapper.getMenu(id);
     }
 
     @Override
-    public List<Menu> getRoleMenus(Integer roleId) {
-        List<Menu> menuList = menuMapper.listRoleMenus(roleId);
-        return menuList;
+    public void updateMenu(Integer id, MenuUpdate menuUpdate) {
+        Menu menu=new Menu();
+        BeanUtils.copyProperties(menuUpdate,menu);
+        menuMapper.updateMenu(menu);
     }
 
     @Override
-    public List<Menu> getAdminMenus(Integer adminId) {
-        return menuMapper.listAdminMenus(adminId);
+    public void deleteMenu(Integer id) {
+        menuMapper.deleteMenu(id);
+    }
+
+    @Override
+    public List<MenuNode> getAdminTreeMenus(Admin admin) {
+        List<Menu> menus;
+        if("admin".equals(admin.getType())){
+            menus = menuMapper.getAllMenus();
+        }else{
+            menus = menuMapper.getAdminMenus(admin.getId());
+        }
+        List<MenuNode> menuNodes=menus.stream()
+                .filter(menu -> menu.getType().equals(0))
+                .map(menu -> covert(menu,menus))
+                .collect(Collectors.toList());
+        return menuNodes;
+    }
+
+    @Override
+    @Cacheable(value = "adminPermission",key = "#admin.id")
+    public Set<String> getAdminMenuPermissions(Admin admin) {
+        Set<String> adminPermissions=new HashSet<>();
+        if("admin".equals(admin.getType())){
+            Set<String> permissions=menuMapper.getAllMenus().stream().map(Menu::getPermission).collect(Collectors.toSet());
+            adminPermissions.addAll(permissions);
+        }else{
+            adminPermissions.addAll(menuMapper.getAdminMenuPermissions(admin.getId()));
+        }
+        return adminPermissions;
     }
 
     /**
@@ -120,5 +116,49 @@ public class MenuServiceImpl  implements MenuService {
                 .map(subMenu -> covert(subMenu,menuList)).collect(Collectors.toList());
         node.setChildren(children);
         return node;
+    }
+
+    @Override
+    public List<RouteVo> menuCovertRoute(List<MenuNode> menuNodes) {
+        List<RouteVo> routeVos =new ArrayList<>();
+        for(MenuNode menuNode:menuNodes){
+            RouteVo routeVo =new RouteVo();
+            routeVo.setName(menuNode.getName());
+            routeVo.setPath(menuNode.getUri());
+            if(menuNode.getIsHidden()==0){
+                routeVo.setHidden(false);
+            }else{
+                routeVo.setHidden(true);
+            }
+
+            //routerVo.setRedirect();
+            routeVo.setComponent(menuNode.getComponent());
+            //routerVo.setAlwaysShow();
+            MetaVo metaVo=new MetaVo();
+            metaVo.setIcon(menuNode.getIcon());
+            metaVo.setTitle(menuNode.getName());
+            routeVo.setMeta(metaVo);
+            List<RouteVo> children=new ArrayList<>();
+
+            for(Menu menu:menuNode.getChildren()){
+                RouteVo nextRouteVo =new RouteVo();
+                nextRouteVo.setName(menu.getName());
+                nextRouteVo.setPath(menu.getUri());
+                nextRouteVo.setComponent(menu.getComponent());
+                if(menu.getIsHidden()==0){
+                    nextRouteVo.setHidden(false);
+                }else{
+                    nextRouteVo.setHidden(true);
+                }
+                MetaVo nextMetaVo=new MetaVo();
+                nextMetaVo.setIcon(menu.getIcon());
+                nextMetaVo.setTitle(menu.getName());
+                nextRouteVo.setMeta(nextMetaVo);
+                children.add(nextRouteVo);
+            }
+            routeVo.setChildren(children);
+            routeVos.add(routeVo);
+        }
+        return routeVos;
     }
 }

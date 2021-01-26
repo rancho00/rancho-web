@@ -7,9 +7,11 @@
     <result column="role_id" jdbcType="INTEGER" property="roleId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
- <select id="countByRoleId" resultType="int">
-   select count(0) from admin_role where role_id=#{roleId}
- </select>
+
+     <select id="getAdminRoleCountByRoleId" resultType="int">
+       select count(0) from admin_role where role_id=#{roleId}
+     </select>
+
     <insert id="addAdminRole" parameterType="com.rancho.web.admin.domain.AdminRole">
         insert into admin_role (admin_id,role_id,create_time) values (#{adminId},#{roleId},#{createTime})
     </insert>
@@ -26,4 +28,8 @@
     <delete id="deleteByAdminId">
         delete from admin_role where admin_id=#{adminId}
     </delete>
+
+    <select id="getAdminRoleByAdminId" resultMap="BaseResultMap">
+        select * from admin_role where admin_id=#{adminId}
+    </select>
 </mapper>

@@ -22,15 +22,15 @@ public class MenuCreate {
 
     @ApiModelProperty(value = "权限值")
     @NotBlank(message = "权限值不能为空")
-    private String value;
+    private String permission;
 
     @ApiModelProperty(value = "权限类型：0->目录；1->菜单；2->按钮（接口绑定权限）")
     @Min(value = 0L, message = "无效权限类型")
     @Max(value = 2L, message = "无效权限类型")
     private Integer type;
 
-    @ApiModelProperty(value = "uri")
-    @NotBlank(message = "uri不能为空")
+    @ApiModelProperty(value = "访问路径")
+    @NotBlank(message = "访问路径不能为空")
     private String uri;
 
     @ApiModelProperty(value = "状态（0禁用，1启用）")

@@ -16,7 +16,8 @@
         delete from role_menu where role_id=#{roleId}
     </delete>
 
-    <select id="countByMenuId" resultType="int">
-        select count(0) from sms_role_menu where menu_id=#{menuId}
+    <select id="getRoleMenusByRoleId" resultMap="BaseResultMap">
+        select * from role_menu where role_id=#{roleId}
     </select>
 </mapper>
+

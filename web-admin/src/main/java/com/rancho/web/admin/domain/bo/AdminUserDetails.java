@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -15,17 +16,17 @@ import java.util.stream.Collectors;
  */
 public class AdminUserDetails implements UserDetails {
     private Admin admin;
-    private List<Menu> menuList;
-    public AdminUserDetails(Admin admin, List<Menu> menuList) {
+    private Set<String> permissions;
+    public AdminUserDetails(Admin admin, Set<String> permissions) {
         this.admin = admin;
-        this.menuList = menuList;
+        this.permissions = permissions;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //返回当前用户的权限
-        return  menuList.stream().map(menu ->
-                        new SimpleGrantedAuthority(menu.getValue())
+        return  permissions.stream().map(permission ->
+                        new SimpleGrantedAuthority(permission)
                 ).collect(Collectors.toList());
     }
 

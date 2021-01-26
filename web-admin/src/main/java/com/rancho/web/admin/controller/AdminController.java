@@ -2,12 +2,13 @@ package com.rancho.web.admin.controller;
 
 import com.rancho.web.admin.annotation.Log;
 import com.rancho.web.admin.domain.Admin;
-import com.rancho.web.admin.domain.Role;
 import com.rancho.web.admin.domain.bo.AdminUserDetails;
 import com.rancho.web.admin.domain.dto.adminDto.AdminLogin;
 import com.rancho.web.admin.domain.dto.adminDto.AdminCreate;
 import com.rancho.web.admin.domain.dto.adminDto.AdminUpdate;
 import com.rancho.web.admin.domain.dto.menu.MenuNode;
+import com.rancho.web.admin.domain.vo.AdminWithRole;
+import com.rancho.web.admin.domain.vo.RouteVo;
 import com.rancho.web.admin.service.AdminService;
 import com.rancho.web.admin.service.MenuService;
 import com.rancho.web.admin.service.RoleService;
@@ -69,31 +70,33 @@ public class AdminController {
     public ResponseEntity<CommonResult> info() {
         AdminUserDetails adminUserDetails = (AdminUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Admin admin = adminService.getAdminByUsername(adminUserDetails.getUsername());
-        List<Role> roleList;
-        //加载角色
-        if("admin".equals(admin.getUsername())){
-            roleList = roleService.getRoles(null,null);
-        }else {
-            roleList = roleService.getRolesByAdminId(admin.getId());
-        }
-        //加载管理员菜单
-        List<MenuNode> smsMenuList;
-        if("admin".equals(admin.getUsername())){
-            smsMenuList = menuService.getTreeMenus();
-        }else{
-            smsMenuList = menuService.getAdminTreeMenus(admin.getId());
-        }
+        Set<String> roles= roleService.getAdminRoles(admin);
+        Set<String> permissions= menuService.getAdminMenuPermissions(admin);
         Map<String, Object> data = new HashMap<>();
         data.put("admin", admin);
-        data.put("roles", roleList);
-        data.put("menus", smsMenuList);
+        data.put("roles", roles);
+        data.put("menus", permissions);
         return ResponseEntity.ok(new CommonResult().ok(data));
+    }
+
+    @ApiOperation(value = "获取当前登录管理员路由信息")
+    @GetMapping("/route")
+    @ResponseBody
+    public ResponseEntity<CommonResult> getAdminRoutes() {
+        AdminUserDetails adminUserDetails = (AdminUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Admin admin = adminService.getAdminByUsername(adminUserDetails.getUsername());
+        List<MenuNode> menuNodes=menuService.getAdminTreeMenus(admin);
+        List<RouteVo> routeVos = menuService.menuCovertRoute(menuNodes);
+        return ResponseEntity.ok(new CommonResult().ok(routeVos));
     }
 
     @ApiOperation(value = "登出功能")
     @PostMapping("/logout")
     @ResponseBody
     public ResponseEntity<CommonResult> logout() {
+        AdminUserDetails adminUserDetails = (AdminUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Admin admin = adminService.getAdminByUsername(adminUserDetails.getUsername());
+        adminService.logout(admin);
         return ResponseEntity.ok(new CommonResult().ok());
     }
 
@@ -103,7 +106,8 @@ public class AdminController {
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:list')")
     public ResponseEntity<CommonResult<PageInfo<Admin>>> getAdmins(Admin admin, Page page) {
-        PageInfo<Admin> pageInfo = PageInfo.convertPage(adminService.getAdmins(admin,page));
+        List<Admin> admins=adminService.getAdmins(admin,page);
+        PageInfo<Admin> pageInfo = PageInfo.convertPage(admins);
         return ResponseEntity.ok(new CommonResult().ok(pageInfo));
     }
 
@@ -122,10 +126,9 @@ public class AdminController {
     @GetMapping("/{id}")
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:detail')")
-    public ResponseEntity<CommonResult<AdminCreate>> getAdmin(@PathVariable Integer id) {
-//        AdminCreate adminCreate = adminService.getAdminBaseById(id);
-//        return ResponseEntity.ok(new CommonResult().ok(adminCreate));
-        return null;
+    public ResponseEntity<CommonResult<AdminWithRole>> getAdminWithRole(@PathVariable Integer id) {
+        AdminWithRole adminWithRole = adminService.getAdminWithRole(id);
+        return ResponseEntity.ok(new CommonResult().ok(adminWithRole));
     }
 
     @Log("更新管理员")
@@ -144,7 +147,7 @@ public class AdminController {
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:updateStatus')")
     public ResponseEntity<CommonResult> updateStatus(@PathVariable Integer id,Integer status) {
-        //adminService.updateAdminStatus(id,status);
+        adminService.updateAdminStatus(id,status);
         return ResponseEntity.ok(new CommonResult().ok());
     }
 

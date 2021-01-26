@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface AdminMapper {
 
-    List<Admin> getAdmins(Admin admin);
-
     Admin getAdminByUsername(@Param("username") String username);
+
+    List<Admin> getAdmins(Admin admin);
 
     void addAdmin(Admin admin);
 
@@ -17,5 +17,5 @@ public interface AdminMapper {
 
     void updateAdmin(Admin admin);
 
-    void updateAdminState(Integer id,Integer status);
+    void updateAdminStatus(Integer id,Integer status);
 }

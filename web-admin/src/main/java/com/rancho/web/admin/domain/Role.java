@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class Role implements Serializable {
+public class Role{
 
     @ApiModelProperty(value = "id")
     private Integer id;
@@ -22,5 +22,8 @@ public class Role implements Serializable {
 
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
+
+    @ApiModelProperty(value = "key")
+    private String key;
 
 }

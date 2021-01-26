@@ -5,13 +5,10 @@
         <id column="id" jdbcType="INTEGER" property="id" />
         <result column="name" jdbcType="VARCHAR" property="name" />
         <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="key" jdbcType="VARCHAR" property="key" />
         <result column="status" jdbcType="INTEGER" property="status" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     </resultMap>
-
-    <select id="listByAdminId" resultMap="BaseResultMap">
-        select sr.* from sms_role sr join sms_admin_role sar on sr.id=sar.role_id where sar.admin_id=#{adminId}
-    </select>
 
     <select id="getRoles" resultMap="BaseResultMap" parameterType="com.rancho.web.admin.domain.Role">
         select * from role
@@ -25,10 +22,6 @@
     <insert id="addRole" parameterType="com.rancho.web.admin.domain.Admin" useGeneratedKeys="true" keyProperty="id">
         insert into role (name,description,status,create_time) values (#{name},#{description},#{status},now())
     </insert>
-
-    <select id="getRole" resultMap="BaseResultMap">
-        select * from role where id=#{id}
-    </select>
 
     <update id="updateRole" parameterType="com.rancho.web.admin.domain.Role">
         update role
@@ -49,4 +42,8 @@
     <delete id="deleteRole">
         delete from role where id=#{id}
     </delete>
+
+    <select id="getAdminRoleKeys" resultType="java.util.Set">
+        select r.key from role r join admin_role ar on r.id=ar.role_id where ar.admin_id=#{adminId}
+    </select>
 </mapper>

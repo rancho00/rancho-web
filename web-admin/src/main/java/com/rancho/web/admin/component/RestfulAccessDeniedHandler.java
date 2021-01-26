@@ -2,6 +2,7 @@ package com.rancho.web.admin.component;
 
 import com.alibaba.fastjson.JSON;
 import com.rancho.web.common.result.CommonResult;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,8 @@ public class RestfulAccessDeniedHandler implements AccessDeniedHandler{
                        HttpServletResponse response,
                        AccessDeniedException e) throws IOException, ServletException {
         response.setContentType("application/json;charset=utf-8");
-        //response.getWriter().println(JSON.toJSON(CommonResult.forbidden(e.getMessage())));
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        response.getWriter().println(JSON.toJSON(new CommonResult().forbidden(e.getMessage())));
         response.getWriter().flush();
     }
 }

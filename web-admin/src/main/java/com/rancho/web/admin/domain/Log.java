@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.sql.Date;
 
 @Data
-public class Log implements Serializable {
+public class Log{
 
     @ApiModelProperty(value = "id")
     private Integer id;

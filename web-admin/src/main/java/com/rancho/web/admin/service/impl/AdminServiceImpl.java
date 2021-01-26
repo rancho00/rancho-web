@@ -6,6 +6,7 @@ import com.rancho.web.admin.domain.AdminRole;
 import com.rancho.web.admin.domain.dto.adminDto.AdminCreate;
 import com.rancho.web.admin.domain.dto.adminDto.AdminLogin;
 import com.rancho.web.admin.domain.dto.adminDto.AdminUpdate;
+import com.rancho.web.admin.domain.vo.AdminWithRole;
 import com.rancho.web.admin.mapper.AdminMapper;
 import com.rancho.web.admin.mapper.AdminRoleMapper;
 import com.rancho.web.admin.mapper.MenuMapper;
@@ -17,6 +18,8 @@ import com.rancho.web.common.page.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -41,7 +44,7 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    //@Autowired
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -50,16 +53,13 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private AdminRoleMapper adminRoleMapper;
 
-    @Autowired
-    private MenuMapper menuMapper;
-
     @Override
     public String login(AdminLogin adminLogin) {
         String token = null;
         //密码需要客户端加密后传递
         try {
             UserDetails userDetails = userDetailsService.loadUserByUsername(adminLogin.getUsername());
-           if(!passwordEncoder.matches(adminLogin.getPassword(),userDetails.getPassword())){
+            if(!passwordEncoder.matches(adminLogin.getPassword(),userDetails.getPassword())){
                 throw new BadCredentialsException("密码不正确");
             }
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -72,9 +72,31 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @CacheEvict(value = "adminPermission",key = "#admin.id")
+    public void logout(Admin admin) {
+
+    }
+
+    @Override
+    public Admin getAdminByUsername(String username) {
+        return adminMapper.getAdminByUsername(username);
+    }
+
+
+    @Override
     public List<Admin> getAdmins(Admin admin, Page page) {
         PageHelper.startPage(page.getPageNumber(),page.getPageSize());
         return adminMapper.getAdmins(admin);
+    }
+
+    @Override
+    public AdminWithRole getAdminWithRole(Integer id) {
+        AdminWithRole adminWithRole=new AdminWithRole();
+        Admin admin=adminMapper.getAdmin(id);
+        BeanUtils.copyProperties(admin,adminWithRole);
+        List<AdminRole> adminRoles=adminRoleMapper.getAdminRoleByAdminId(id);
+        adminWithRole.setAdminRoles(adminRoles);
+        return adminWithRole;
     }
 
     @Override
@@ -98,11 +120,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Admin getAdmin(Integer id) {
-        return adminMapper.getAdmin(id);
-    }
-
-    @Override
     public void updateAdmin(Integer id, AdminUpdate adminUpdate) {
         Admin admin =new Admin();
         BeanUtils.copyProperties(adminUpdate, admin);
@@ -119,31 +136,10 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void updateAdminState(Integer id, Integer status) {
-        adminMapper.updateAdminState(id,status);
+    public void updateAdminStatus(Integer id, Integer status) {
+        adminMapper.updateAdminStatus(id,status);
     }
 
-    @Override
-    public Admin getAdminByUsername(String username) {
-        return adminMapper.getAdminByUsername(username);
-    }
-
-//    @Override
-//    public AdminCreate getAdminBaseById(Integer id) {
-//        Admin admin=adminMapper.getAdmin(id);
-//        AdminCreate adminCreate =new AdminCreate();
-//        BeanUtils.copyProperties(admin, adminCreate);
-//        //查询角色
-//        AdminRole adminRole =new AdminRole();
-//        adminRole.setAdminId(id);
-//        List<AdminRole> adminRoleList = adminRoleMapper.getAdminRole(adminRole);
-//        List<Integer> roleIdList=new ArrayList<>();
-//        for(AdminRole sar: adminRoleList){
-//            roleIdList.add(sar.getRoleId());
-//        }
-//        adminCreate.setRoleIdList(roleIdList);
-//        return adminCreate;
-//    }
 
     @Override
     public void download(List<Admin> adminList, HttpServletResponse response) throws IOException {

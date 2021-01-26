@@ -2,7 +2,9 @@ package com.rancho.web.admin.controller;
 
 import com.rancho.web.admin.annotation.Log;
 import com.rancho.web.admin.domain.Role;
-import com.rancho.web.admin.domain.dto.role.RoleBase;
+import com.rancho.web.admin.domain.RoleMenu;
+import com.rancho.web.admin.domain.dto.role.RoleCreate;
+import com.rancho.web.admin.domain.dto.role.RoleUpdate;
 import com.rancho.web.admin.service.RoleService;
 import com.rancho.web.common.page.Page;
 import com.rancho.web.common.page.PageInfo;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Api(value = "角色管理", tags = "角色管理")
@@ -40,8 +43,8 @@ public class RoleController {
     @GetMapping("/simpleList")
     @ResponseBody
     @PreAuthorize("hasAuthority('role:list')")
-    public ResponseEntity<CommonResult<List<Role>>> getRoles(Role role) {
-        List<Role> roles=roleService.getRoles(role,null);
+    public ResponseEntity<CommonResult<List<Role>>> getRoles() {
+        List<Role> roles=roleService.getAllRoles();
         return ResponseEntity.ok(new CommonResult().ok(roles));
     }
 
@@ -50,19 +53,19 @@ public class RoleController {
     @PostMapping
     @ResponseBody
     @PreAuthorize("hasAuthority('role:add')")
-    public ResponseEntity<CommonResult> addRole(@Validated @RequestBody RoleBase roleBase) {
-        roleService.addRole(roleBase);
+    public ResponseEntity<CommonResult> addRole(@Validated @RequestBody RoleCreate roleCreate) {
+        roleService.addRole(roleCreate);
         return ResponseEntity.ok(new CommonResult().ok());
     }
 
-    @Log("查询角色详情")
-    @ApiOperation(value = "获取角色详情")
-    @GetMapping("/{id}")
+    @Log("查询角色菜单")
+    @ApiOperation(value = "获取角色菜单")
+    @GetMapping("/{id}/menu")
     @ResponseBody
     @PreAuthorize("hasAuthority('role:detail')")
-    public ResponseEntity<CommonResult<RoleBase>> getRole(@PathVariable Integer id) {
-        RoleBase roleBase = roleService.getRoleBaseById(id);
-        return ResponseEntity.ok(new CommonResult().ok(roleBase));
+    public ResponseEntity<CommonResult<RoleMenu>> getRoleMenus(@PathVariable Integer id) {
+        List<RoleMenu> roleWithMenu = roleService.getRoleMenus(id);
+        return ResponseEntity.ok(new CommonResult().ok(roleWithMenu));
     }
 
     @Log("更新角色")
@@ -70,8 +73,18 @@ public class RoleController {
     @PutMapping("/{id}")
     @ResponseBody
     @PreAuthorize("hasAuthority('role:update')")
-    public ResponseEntity<CommonResult> updateRole(@PathVariable Integer id, @Validated @RequestBody RoleBase roleBase) {
-        roleService.updateRole(id, roleBase);
+    public ResponseEntity<CommonResult> updateRole(@PathVariable Integer id, @Validated @RequestBody RoleUpdate roleUpdate) {
+        roleService.updateRole(id, roleUpdate);
+        return ResponseEntity.ok(new CommonResult().ok());
+    }
+
+    @Log("更新角色菜单")
+    @ApiOperation(value = "更新角色菜单")
+    @PutMapping("/{id}/menu")
+    @ResponseBody
+    @PreAuthorize("hasAuthority('role:update')")
+    public ResponseEntity<CommonResult> updateRoleMenu(@PathVariable Integer id, @Validated @RequestBody Integer[] menuIds) {
+        roleService.updateRoleMenu(id, Arrays.asList(menuIds));
         return ResponseEntity.ok(new CommonResult().ok());
     }
 

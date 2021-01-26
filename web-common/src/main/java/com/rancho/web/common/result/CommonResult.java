@@ -48,4 +48,16 @@ public class CommonResult<T> {
         this.message = message;
         return this;
     }
+
+    public CommonResult unauthorized(String message){
+        this.code = ResultCode.UNAUTHORIZED.getCode();
+        this.message = message;
+        return this;
+    }
+
+    public CommonResult forbidden(String message){
+        this.code = ResultCode.FORBIDDEN.getCode();
+        this.message = message;
+        return this;
+    }
 }

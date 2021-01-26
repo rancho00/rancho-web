@@ -59,6 +59,8 @@
     </update>
 
     <update id="updateAdminStatus" parameterType="com.rancho.web.admin.domain.Admin">
-        update admin status=#{status} where id=#{id}
+        update admin set status=#{status} where id=#{id}
     </update>
+
+
 </mapper>

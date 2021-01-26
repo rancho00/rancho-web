@@ -2,6 +2,7 @@ package com.rancho.web.admin.component;
 
 import com.alibaba.fastjson.JSON;
 import com.rancho.web.common.result.CommonResult;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,8 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
-        //response.getWriter().println(JSON.toJSON(CommonResult.unauthorized(e.getMessage())));
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.getWriter().println(JSON.toJSON(new CommonResult().unauthorized(e.getMessage())));
         response.getWriter().flush();
     }
 }

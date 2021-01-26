@@ -9,9 +9,11 @@ public interface AdminRoleMapper{
 
     void addAdminRole(AdminRole adminRole);
 
-    int countByRoleId(@Param("roleId") Integer roleId);
+    int getAdminRoleCountByRoleId(@Param("roleId") Integer roleId);
 
     void deleteByAdminId(@Param("adminId") Integer adminId);
 
     List<AdminRole> getAdminRole(AdminRole adminRole);
+
+    List<AdminRole> getAdminRoleByAdminId(@Param("adminId") Integer adminId);
 }

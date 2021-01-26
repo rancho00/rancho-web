@@ -37,7 +37,6 @@ public class LogServiceImpl implements LogService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void addLog(String username, String browser, String ip, ProceedingJoinPoint joinPoint, Log log){
-
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         com.rancho.web.admin.annotation.Log aopLog = method.getAnnotation(com.rancho.web.admin.annotation.Log.class);

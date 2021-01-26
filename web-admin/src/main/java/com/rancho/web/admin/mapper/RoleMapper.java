@@ -4,12 +4,11 @@ import com.rancho.web.admin.domain.Role;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface RoleMapper{
 
     List<Role> getRoles(Role role);
-
-    Role getRole(Integer id);
 
     void addRole(Role role);
 
@@ -17,5 +16,5 @@ public interface RoleMapper{
 
     void deleteRole(Integer id);
 
-    List<Role> listByAdminId(@Param("adminId") Integer adminId);
+    Set<String> getAdminRoleKeys(@Param("adminId") Integer adminId);
 }
