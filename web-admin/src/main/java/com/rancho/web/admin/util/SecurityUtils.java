@@ -1,17 +1,17 @@
 package com.rancho.web.admin.util;
 
-import cn.hutool.json.JSONObject;
 import com.rancho.web.admin.domain.bo.AdminUserDetails;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.rancho.web.common.common.UnAuthorizedException;
+import com.rancho.web.common.result.ResultCode;
 
 public class SecurityUtils {
 
     public static AdminUserDetails getUserDetails() {
-        AdminUserDetails adminUserDetails = null;
+        AdminUserDetails adminUserDetails;
         try {
             adminUserDetails = (AdminUserDetails) org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         } catch (Exception e) {
-            //throw new BadRequestException(HttpStatus.UNAUTHORIZED, "登录状态过期");
+            throw new UnAuthorizedException(ResultCode.UNAUTHORIZED);
         }
         return adminUserDetails;
     }

@@ -1,6 +1,6 @@
 package com.rancho.web.admin.mapper;
 
-import com.rancho.web.admin.domain.AdminRole;
+import com.rancho.web.db.domain.AdminRole;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

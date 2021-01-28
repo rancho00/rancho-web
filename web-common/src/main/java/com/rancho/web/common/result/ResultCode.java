@@ -12,18 +12,12 @@ public enum ResultCode implements IErrorCode {
     INTERNAL_SERVER_ERROR(500,"INTERNAL_SERVER_ERROR", "服务器异常"),
     ;
 
-    private int status;
     private String code;
     private String message;
 
     ResultCode(int status,String code, String message) {
-        this.status = status;
         this.code = code;
         this.message = message;
-    }
-
-    public int getStatus() {
-        return status;
     }
 
     public String getCode() {
@@ -42,11 +36,4 @@ public enum ResultCode implements IErrorCode {
         this.message = message;
     }
 
-    @Override
-    public String toString() {
-        return "{" +
-                "code='" + code + '\'' +
-                ", message='" + message + '\'' +
-                '}';
-    }
 }

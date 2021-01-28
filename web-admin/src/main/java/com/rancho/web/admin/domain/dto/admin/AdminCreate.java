@@ -1,12 +1,10 @@
-package com.rancho.web.admin.domain.dto.adminDto;
+package com.rancho.web.admin.domain.dto.admin;
 
 import com.rancho.web.admin.validation.NotAdmin;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.ibatis.annotations.Update;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -23,7 +21,7 @@ public class AdminCreate {
     private String username;
 
     @ApiModelProperty(value = "密码")
-    //@NotBlank(message = "密码不能为空")
+    @NotBlank(message = "密码不能为空")
     private String password;
 
     @ApiModelProperty(value = "名称")
@@ -33,5 +31,5 @@ public class AdminCreate {
     private Integer status;
 
     @ApiModelProperty(value = "角色list")
-    private List<Integer> roleIdList;
+    private List<Integer> roleIds;
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.rancho.web.admin.mapper.MenuMapper">
 
-  <resultMap id="BaseResultMap" type="com.rancho.web.admin.domain.Menu">
+  <resultMap id="BaseResultMap" type="com.rancho.web.db.domain.Menu">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="pid" jdbcType="INTEGER" property="pid" />
     <result column="name" jdbcType="VARCHAR" property="name" />
@@ -33,7 +33,7 @@
                                         where sar.admin_id=#{adminId}
   </select>
 
-  <insert id="addMenu" parameterType="com.rancho.web.admin.domain.Menu">
+  <insert id="addMenu" parameterType="com.rancho.web.db.domain.Menu">
     insert into menu (pid,name,permission,type,uri,status,component,icon,is_hidden,sort,create_time) values (
     #{pid},
     #{name},
@@ -49,7 +49,7 @@
     )
   </insert>
 
-  <update id="updateMenu" parameterType="com.rancho.web.admin.domain.Menu">
+  <update id="updateMenu" parameterType="com.rancho.web.db.domain.Menu">
     update menu
     <set>
       <if test="pid!=null">
@@ -91,12 +91,8 @@
     select * from menu where id=#{id}
   </select>
 
-<!--  <select id="getRoleMenus" parameterType="int" resultMap="BaseResultMap">-->
-<!--    select sm.* from role_menu srm join menu sm on srm.menu_id=sm.id where srm.role_id=#{roleId}-->
-<!--  </select>-->
-
-  <select id="getAdminMenuPermissions" resultType="java.util.Set">
-    select sm.* from role sr
+  <select id="getAdminMenuPermissions" resultType="string">
+    select sm.permission from role sr
                        join admin_role sar on sr.id=sar.role_id and sr.status=1
                        join role_menu srm on sar.role_id=srm.role_id
                        join menu sm on srm.menu_id=sm.id

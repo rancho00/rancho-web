@@ -10,54 +10,46 @@ import lombok.Data;
  */
 @Data
 @ApiModel(description = "响应对象")
-public class CommonResult<T> {
+public class CommonResult<T>{
 
     @ApiModelProperty(value = "响应码")
-    private String code;
+    public String code;
 
     @ApiModelProperty(value = "响应消息")
-    private String message;
+    public String message;
 
     @ApiModelProperty(value = "响应数据")
-    private T data;
+    public T data;
 
-    public CommonResult(){
-
-    }
-
-    public CommonResult(ResultCode resultCode) {
-        this.code = resultCode.getCode();
-        this.message = resultCode.getMessage();
-    }
-
-    public CommonResult ok(){
-        this.code = ResultCode.OK.getCode();
-        this.message = ResultCode.OK.getMessage();
-        return this;
-    }
-
-    public CommonResult ok(T data){
-        this.code = ResultCode.OK.getCode();
-        this.message = ResultCode.OK.getMessage();
+    public CommonResult(String code,String message,T data){
+        this.code=code;
+        this.message=message;
         this.data=data;
-        return this;
     }
 
-    public CommonResult badRequest(String message){
-        this.code = ResultCode.BAD_REQUEST.getCode();
-        this.message = message;
-        return this;
+    public CommonResult(String code,String message){
+        this.code=code;
+        this.message=message;
     }
 
-    public CommonResult unauthorized(String message){
-        this.code = ResultCode.UNAUTHORIZED.getCode();
-        this.message = message;
-        return this;
+
+    public static CommonResult ok(){
+        return new CommonResult(ResultCode.OK.getCode(),ResultCode.OK.getMessage());
     }
 
-    public CommonResult forbidden(String message){
-        this.code = ResultCode.FORBIDDEN.getCode();
-        this.message = message;
-        return this;
+    public static <T> CommonResult ok(T data){
+        return new CommonResult(ResultCode.OK.getCode(),ResultCode.OK.getMessage(),data);
+    }
+
+    public static CommonResult badRequest(String message){
+        return new CommonResult(ResultCode.BAD_REQUEST.getCode(),message);
+    }
+
+    public static CommonResult unauthorized(){
+        return new CommonResult(ResultCode.UNAUTHORIZED.getCode(),ResultCode.UNAUTHORIZED.getMessage());
+    }
+
+    public static CommonResult forbidden(){
+        return new CommonResult(ResultCode.FORBIDDEN.getCode(),ResultCode.FORBIDDEN.getMessage());
     }
 }

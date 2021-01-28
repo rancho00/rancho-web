@@ -1,9 +1,8 @@
-package com.rancho.web.admin.domain;
+package com.rancho.web.db.domain;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.Date;
 
 @Data

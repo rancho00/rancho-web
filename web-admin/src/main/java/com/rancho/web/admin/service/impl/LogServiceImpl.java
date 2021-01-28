@@ -2,11 +2,11 @@ package com.rancho.web.admin.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
-import com.rancho.web.admin.domain.Log;
 import com.rancho.web.admin.mapper.LogMapper;
 import com.rancho.web.admin.service.LogService;
 import com.rancho.web.admin.util.StringUtils;
 import com.rancho.web.common.page.Page;
+import com.rancho.web.db.domain.Log;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +65,7 @@ public class LogServiceImpl implements LogService {
         if(LOGINPATH.equals(signature.getName())){
             try {
                 assert argValues != null;
-                username = new JSONObject((Integer) argValues[0]).get("username").toString();
+                username = new JSONObject((Integer)argValues[0]).get("username").toString();
             }catch (Exception e){
                 e.printStackTrace();
             }

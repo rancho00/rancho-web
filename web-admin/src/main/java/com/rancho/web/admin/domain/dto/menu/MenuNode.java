@@ -1,6 +1,6 @@
 package com.rancho.web.admin.domain.dto.menu;
 
-import com.rancho.web.admin.domain.Menu;
+import com.rancho.web.db.domain.Menu;
 import lombok.Data;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.rancho.web.admin.mapper.RoleMapper">
-    <resultMap id="BaseResultMap" type="com.rancho.web.admin.domain.Role">
+    <resultMap id="BaseResultMap" type="com.rancho.web.db.domain.Role">
         <id column="id" jdbcType="INTEGER" property="id" />
         <result column="name" jdbcType="VARCHAR" property="name" />
         <result column="description" jdbcType="VARCHAR" property="description" />
@@ -10,7 +10,7 @@
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     </resultMap>
 
-    <select id="getRoles" resultMap="BaseResultMap" parameterType="com.rancho.web.admin.domain.Role">
+    <select id="getRoles" resultMap="BaseResultMap" parameterType="com.rancho.web.db.domain.Role">
         select * from role
         <where>
             <if test="status!=null">
@@ -19,11 +19,11 @@
         </where>
     </select>
 
-    <insert id="addRole" parameterType="com.rancho.web.admin.domain.Admin" useGeneratedKeys="true" keyProperty="id">
+    <insert id="addRole" parameterType="com.rancho.web.db.domain.Admin" useGeneratedKeys="true" keyProperty="id">
         insert into role (name,description,status,create_time) values (#{name},#{description},#{status},now())
     </insert>
 
-    <update id="updateRole" parameterType="com.rancho.web.admin.domain.Role">
+    <update id="updateRole" parameterType="com.rancho.web.db.domain.Role">
         update role
         <set>
             <if test="name!=null">
@@ -43,7 +43,7 @@
         delete from role where id=#{id}
     </delete>
 
-    <select id="getAdminRoleKeys" resultType="java.util.Set">
+    <select id="getAdminRoleKeys" resultType="string">
         select r.key from role r join admin_role ar on r.id=ar.role_id where ar.admin_id=#{adminId}
     </select>
 </mapper>

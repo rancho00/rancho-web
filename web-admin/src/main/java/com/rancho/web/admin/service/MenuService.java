@@ -1,12 +1,11 @@
 package com.rancho.web.admin.service;
 
-import com.rancho.web.admin.domain.Admin;
-import com.rancho.web.admin.domain.Menu;
 import com.rancho.web.admin.domain.dto.menu.MenuCreate;
 import com.rancho.web.admin.domain.dto.menu.MenuNode;
-import com.rancho.web.admin.domain.dto.menu.MenuParam;
 import com.rancho.web.admin.domain.dto.menu.MenuUpdate;
 import com.rancho.web.admin.domain.vo.RouteVo;
+import com.rancho.web.db.domain.Admin;
+import com.rancho.web.db.domain.Menu;
 
 import java.util.List;
 import java.util.Set;

@@ -3,12 +3,13 @@ package com.rancho.web.admin.config;
 import com.rancho.web.admin.component.JwtAuthenticationTokenFilter;
 import com.rancho.web.admin.component.RestAuthenticationEntryPoint;
 import com.rancho.web.admin.component.RestfulAccessDeniedHandler;
-import com.rancho.web.admin.domain.Admin;
-import com.rancho.web.admin.domain.Menu;
 import com.rancho.web.admin.domain.bo.AdminUserDetails;
+import com.rancho.web.admin.domain.dto.admin.AdminPassword;
 import com.rancho.web.admin.service.AdminService;
 import com.rancho.web.admin.service.MenuService;
-import com.rancho.web.common.common.CommonException;
+import com.rancho.web.common.common.BadRequestException;
+import com.rancho.web.common.result.ResultCode;
+import com.rancho.web.db.domain.Admin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -105,14 +106,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public UserDetailsService userDetailsService() {
         //获取登录用户信息
         return username -> {
-            Admin admin = adminService.getAdminByUsername(username);
-            if (admin != null) {
-                if(admin.getStatus()==0){
-                    throw new CommonException("账号已被停用");
+            AdminPassword adminPassword = adminService.getAdminPasswordByUsername(username);
+            if (adminPassword != null) {
+                if(adminPassword.getStatus()==0){
+                    throw new BadRequestException(ResultCode.BAD_REQUEST).message("账号已被停用");
                 }
-                //加载管理员菜单
-                Set<String> permissions=menuService.getAdminMenuPermissions(admin);
-                return new AdminUserDetails(admin, permissions);
+                Set<String> permissions=menuService.getAdminMenuPermissions(adminPassword);
+                return new AdminUserDetails(adminPassword, permissions);
             }
             throw new UsernameNotFoundException("用户名或密码错误");
         };

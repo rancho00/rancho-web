@@ -1,4 +1,4 @@
-package com.rancho.web.admin.domain;
+package com.rancho.web.db.domain;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,9 +12,6 @@ public class Admin{
 
     @ApiModelProperty(value = "账户")
     private String username;
-
-    @ApiModelProperty(value = "密码")
-    private String password;
 
     @ApiModelProperty(value = "昵称")
     private String nickname;

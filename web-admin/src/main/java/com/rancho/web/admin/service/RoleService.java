@@ -1,11 +1,11 @@
 package com.rancho.web.admin.service;
 
-import com.rancho.web.admin.domain.Admin;
-import com.rancho.web.admin.domain.Role;
-import com.rancho.web.admin.domain.RoleMenu;
 import com.rancho.web.admin.domain.dto.role.RoleCreate;
 import com.rancho.web.admin.domain.dto.role.RoleUpdate;
 import com.rancho.web.common.page.Page;
+import com.rancho.web.db.domain.Admin;
+import com.rancho.web.db.domain.Role;
+import com.rancho.web.db.domain.RoleMenu;
 
 import java.util.List;
 import java.util.Set;

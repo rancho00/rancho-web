@@ -1,15 +1,11 @@
-package com.rancho.web.admin.domain.dto.adminDto;
+package com.rancho.web.admin.domain.dto.admin;
 
-import com.rancho.web.admin.validation.NotAdmin;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.ibatis.annotations.Update;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.List;
 
 @Getter
 @Setter

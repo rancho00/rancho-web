@@ -1,17 +1,15 @@
 package com.rancho.web.admin.service.impl;
 
-import com.rancho.web.admin.domain.Admin;
-import com.rancho.web.admin.domain.Menu;
 import com.rancho.web.admin.domain.dto.menu.MenuCreate;
 import com.rancho.web.admin.domain.dto.menu.MenuNode;
-import com.rancho.web.admin.domain.dto.menu.MenuParam;
 import com.rancho.web.admin.domain.dto.menu.MenuUpdate;
 import com.rancho.web.admin.domain.vo.MetaVo;
 import com.rancho.web.admin.domain.vo.RouteVo;
 import com.rancho.web.admin.mapper.MenuMapper;
 import com.rancho.web.admin.mapper.RoleMenuMapper;
 import com.rancho.web.admin.service.MenuService;
-import com.rancho.web.common.common.CommonException;
+import com.rancho.web.db.domain.Admin;
+import com.rancho.web.db.domain.Menu;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -97,7 +95,8 @@ public class MenuServiceImpl  implements MenuService {
             Set<String> permissions=menuMapper.getAllMenus().stream().map(Menu::getPermission).collect(Collectors.toSet());
             adminPermissions.addAll(permissions);
         }else{
-            adminPermissions.addAll(menuMapper.getAdminMenuPermissions(admin.getId()));
+            Set<String> permissions=menuMapper.getAdminMenuPermissions(admin.getId());
+            adminPermissions.addAll(permissions);
         }
         return adminPermissions;
     }

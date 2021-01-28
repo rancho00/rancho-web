@@ -1,7 +1,7 @@
 package com.rancho.web.admin.mapper;
 
-import com.rancho.web.admin.domain.Menu;
 import com.rancho.web.admin.domain.dto.menu.MenuParam;
+import com.rancho.web.db.domain.Menu;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

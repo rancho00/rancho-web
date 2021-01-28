@@ -1,10 +1,10 @@
 package com.rancho.web.admin.controller;
 
-import com.rancho.web.admin.domain.Log;
 import com.rancho.web.admin.service.LogService;
 import com.rancho.web.common.page.Page;
 import com.rancho.web.common.page.PageInfo;
 import com.rancho.web.common.result.CommonResult;
+import com.rancho.web.db.domain.Log;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class LogController {
     @ResponseBody
     @PreAuthorize("hasAuthority('log:list')")
     public ResponseEntity<CommonResult<PageInfo<Log>>> getLogs(Log log, Page page) {
-        return ResponseEntity.ok(new CommonResult().ok(PageInfo.convertPage(logService.getLogs(log,page))));
+        return ResponseEntity.ok(CommonResult.ok(PageInfo.convertPage(logService.getLogs(log,page))));
     }
 
     @ApiOperation(value = "日志详情")
@@ -37,6 +37,6 @@ public class LogController {
     @ResponseBody
     @PreAuthorize("hasAuthority('log:detail')")
     public ResponseEntity<CommonResult<Log>> getLog(@PathVariable Integer id) {
-        return ResponseEntity.ok(new CommonResult().ok(logService.getLog(id)));
+        return ResponseEntity.ok(CommonResult.ok(logService.getLog(id)));
     }
 }

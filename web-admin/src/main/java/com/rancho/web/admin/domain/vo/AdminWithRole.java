@@ -1,7 +1,7 @@
 package com.rancho.web.admin.domain.vo;
 
-import com.rancho.web.admin.domain.Admin;
-import com.rancho.web.admin.domain.AdminRole;
+import com.rancho.web.db.domain.Admin;
+import com.rancho.web.db.domain.AdminRole;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

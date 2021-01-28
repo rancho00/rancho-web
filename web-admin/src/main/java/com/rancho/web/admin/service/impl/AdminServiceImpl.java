@@ -1,28 +1,26 @@
 package com.rancho.web.admin.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.rancho.web.admin.domain.Admin;
-import com.rancho.web.admin.domain.AdminRole;
-import com.rancho.web.admin.domain.dto.adminDto.AdminCreate;
-import com.rancho.web.admin.domain.dto.adminDto.AdminLogin;
-import com.rancho.web.admin.domain.dto.adminDto.AdminUpdate;
+import com.rancho.web.admin.domain.dto.admin.AdminCreate;
+import com.rancho.web.admin.domain.dto.admin.AdminLogin;
+import com.rancho.web.admin.domain.dto.admin.AdminPassword;
+import com.rancho.web.admin.domain.dto.admin.AdminUpdate;
 import com.rancho.web.admin.domain.vo.AdminWithRole;
 import com.rancho.web.admin.mapper.AdminMapper;
 import com.rancho.web.admin.mapper.AdminRoleMapper;
-import com.rancho.web.admin.mapper.MenuMapper;
 import com.rancho.web.admin.service.AdminService;
 import com.rancho.web.admin.util.FileUtil;
 import com.rancho.web.admin.util.JwtTokenUtil;
-import com.rancho.web.common.common.CommonException;
+import com.rancho.web.common.common.BadRequestException;
 import com.rancho.web.common.page.Page;
+import com.rancho.web.common.result.ResultCode;
+import com.rancho.web.db.domain.Admin;
+import com.rancho.web.db.domain.AdminRole;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -55,20 +53,24 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public String login(AdminLogin adminLogin) {
-        String token = null;
-        //密码需要客户端加密后传递
-        try {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(adminLogin.getUsername());
-            if(!passwordEncoder.matches(adminLogin.getPassword(),userDetails.getPassword())){
-                throw new BadCredentialsException("密码不正确");
-            }
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            token = jwtTokenUtil.generateToken(userDetails);
-        } catch (AuthenticationException e) {
-            log.warn("登录异常:{}", e.getMessage());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(adminLogin.getUsername());
+        if(!passwordEncoder.matches(adminLogin.getPassword(),userDetails.getPassword())){
+            return null;
         }
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtTokenUtil.generateToken(userDetails);
         return token;
+    }
+
+    @Override
+    public void updateLoginAdminPassword(String oldPassword, String newPassword) {
+        UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Admin admin = getAdminByUsername(userDetails.getUsername());
+        if(!passwordEncoder.matches(oldPassword,userDetails.getPassword())){
+            throw new BadRequestException(ResultCode.BAD_REQUEST).message("密码错误");
+        }
+        adminMapper.updateAdminPassword(admin.getId(),new BCryptPasswordEncoder().encode(newPassword));
     }
 
     @Override
@@ -82,6 +84,10 @@ public class AdminServiceImpl implements AdminService {
         return adminMapper.getAdminByUsername(username);
     }
 
+    @Override
+    public AdminPassword getAdminPasswordByUsername(String username) {
+        return adminMapper.getAdminPasswordByUsername(username);
+    }
 
     @Override
     public List<Admin> getAdmins(Admin admin, Page page) {
@@ -103,14 +109,14 @@ public class AdminServiceImpl implements AdminService {
     public void addAdmin(AdminCreate adminCreate) {
         Admin admin=adminMapper.getAdminByUsername(adminCreate.getUsername());
         if(admin!=null){
-            throw new CommonException("管理员已存在");
+            throw new BadRequestException(ResultCode.BAD_REQUEST).message("管理员已存在");
         }
-        adminCreate.setPassword(new BCryptPasswordEncoder().encode("123456"));
+        adminCreate.setPassword(new BCryptPasswordEncoder().encode(adminCreate.getPassword()));
         admin=new Admin();
         BeanUtils.copyProperties(adminCreate,admin);
         adminMapper.addAdmin(admin);
         //添加角色
-        for(Integer roleId: adminCreate.getRoleIdList()){
+        for(Integer roleId: adminCreate.getRoleIds()){
             AdminRole adminRole =new AdminRole();
             adminRole.setAdminId(admin.getId());
             adminRole.setRoleId(roleId);
@@ -126,13 +132,18 @@ public class AdminServiceImpl implements AdminService {
         adminMapper.updateAdmin(admin);
         //先删除角色再添加角色
         adminRoleMapper.deleteByAdminId(adminUpdate.getId());
-        for(Integer roleId: adminUpdate.getRoleIdList()){
+        for(Integer roleId: adminUpdate.getRoleIds()){
             AdminRole adminRole =new AdminRole();
             adminRole.setAdminId(adminUpdate.getId());
             adminRole.setRoleId(roleId);
             adminRole.setCreateTime(new Date());
             adminRoleMapper.addAdminRole(adminRole);
         }
+    }
+
+    @Override
+    public void updateAdminPassword(Integer id, String password) {
+        adminMapper.updateAdminPassword(id,new BCryptPasswordEncoder().encode(password));
     }
 
     @Override

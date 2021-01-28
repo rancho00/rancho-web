@@ -1,11 +1,11 @@
 package com.rancho.web.admin.aspect;
 
-import com.rancho.web.admin.domain.Log;
 import com.rancho.web.admin.service.LogService;
 import com.rancho.web.admin.util.RequestHolder;
 import com.rancho.web.admin.util.SecurityUtils;
 import com.rancho.web.admin.util.StringUtils;
 import com.rancho.web.admin.util.ThrowableUtil;
+import com.rancho.web.db.domain.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;

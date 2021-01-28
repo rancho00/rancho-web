@@ -1,9 +1,7 @@
-package com.rancho.web.admin.domain.dto.adminDto;
+package com.rancho.web.admin.domain.dto.admin;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

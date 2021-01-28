@@ -1,13 +1,12 @@
 package com.rancho.web.admin.domain.bo;
 
-import com.rancho.web.admin.domain.Admin;
-import com.rancho.web.admin.domain.Menu;
+import com.rancho.web.admin.domain.dto.admin.AdminPassword;
+import com.rancho.web.db.domain.Admin;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -15,10 +14,10 @@ import java.util.stream.Collectors;
  * SpringSecurity需要的用户详情
  */
 public class AdminUserDetails implements UserDetails {
-    private Admin admin;
+    private AdminPassword adminPassword;
     private Set<String> permissions;
-    public AdminUserDetails(Admin admin, Set<String> permissions) {
-        this.admin = admin;
+    public AdminUserDetails(AdminPassword adminPassword, Set<String> permissions) {
+        this.adminPassword = adminPassword;
         this.permissions = permissions;
     }
 
@@ -32,12 +31,12 @@ public class AdminUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return admin.getPassword();
+        return adminPassword.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return admin.getUsername();
+        return adminPassword.getUsername();
     }
 
     @Override
@@ -57,6 +56,6 @@ public class AdminUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return admin.getStatus().equals(1);
+        return adminPassword.getStatus().equals(1);
     }
 }

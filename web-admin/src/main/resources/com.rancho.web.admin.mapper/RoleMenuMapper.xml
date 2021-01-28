@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.rancho.web.admin.mapper.RoleMenuMapper">
-    <resultMap id="BaseResultMap" type="com.rancho.web.admin.domain.RoleMenu">
+    <resultMap id="BaseResultMap" type="com.rancho.web.db.domain.RoleMenu">
         <id column="id" jdbcType="INTEGER" property="id" />
         <result column="role_id" jdbcType="INTEGER" property="roleId" />
         <result column="menu_id" jdbcType="INTEGER" property="menuId" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     </resultMap>
 
-    <insert id="addRoleMenu" parameterType="com.rancho.web.admin.domain.RoleMenu" >
+    <insert id="addRoleMenu" parameterType="com.rancho.web.db.domain.RoleMenu" >
         insert into role_menu (role_id,menu_id,create_time) values (#{roleId},#{menuId},now())
     </insert>
 

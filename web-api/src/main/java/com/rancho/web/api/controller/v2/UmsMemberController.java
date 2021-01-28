@@ -1,27 +1,25 @@
-package com.rancho.web.api.controller;
+package com.rancho.web.api.controller.v2;
 
 import com.rancho.web.api.annotation.CurrentUser;
+import com.rancho.web.api.constant.Constants;
 import com.rancho.web.api.service.UmsMemberService;
 import com.rancho.web.common.result.CommonResult;
-import com.rancho.web.common.util.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Api(value = "会员管理", tags = "会员管理")
-@Controller
-@RequestMapping("/member")
+@Api(value = "会员管理", tags = "member")
+@Controller("member-v2")
+@RequestMapping(Constants.V2_API_PATH + "/member")
 public class UmsMemberController {
 
     @Value("${jwt.tokenHeader}")
@@ -35,21 +33,18 @@ public class UmsMemberController {
     @ApiOperation(value = "登陆", notes = "登陆")
     @PostMapping("/login")
     @ResponseBody
-    public CommonResult login(){
+    public ResponseEntity<CommonResult> login(){
         String token= umsMemberService.login();
-        if(StringUtils.isEmpty(token)){
-            return CommonResult.failed("账号密码不正确");
-        }
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("token", token);
         tokenMap.put("tokenPrefix", tokenPrefix);
-        return CommonResult.success(tokenMap);
+        return ResponseEntity.ok(CommonResult.ok(tokenMap));
     }
 
     @ApiOperation(value = "test", notes = "test")
     @PostMapping("/test")
     @ResponseBody
-    public CommonResult login(@CurrentUser Integer id){
-        return CommonResult.success();
+    public ResponseEntity<CommonResult> login(@CurrentUser Integer id){
+        return ResponseEntity.ok(CommonResult.ok());
     }
 }

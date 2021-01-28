@@ -22,7 +22,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.getWriter().println(JSON.toJSON(new CommonResult().unauthorized(e.getMessage())));
+        response.getWriter().println(JSON.toJSON(CommonResult.unauthorized()));
         response.getWriter().flush();
     }
 }

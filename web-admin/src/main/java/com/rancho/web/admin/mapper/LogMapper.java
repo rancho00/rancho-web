@@ -1,6 +1,6 @@
 package com.rancho.web.admin.mapper;
 
-import com.rancho.web.admin.domain.Log;
+import com.rancho.web.db.domain.Log;
 
 import java.util.List;
 

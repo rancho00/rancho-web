@@ -1,7 +1,7 @@
 package com.rancho.web.admin.service;
 
-import com.rancho.web.admin.domain.Log;
 import com.rancho.web.common.page.Page;
+import com.rancho.web.db.domain.Log;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.scheduling.annotation.Async;
 

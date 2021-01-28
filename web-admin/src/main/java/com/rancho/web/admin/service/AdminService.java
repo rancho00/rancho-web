@@ -1,11 +1,12 @@
 package com.rancho.web.admin.service;
 
-import com.rancho.web.admin.domain.Admin;
-import com.rancho.web.admin.domain.dto.adminDto.AdminCreate;
-import com.rancho.web.admin.domain.dto.adminDto.AdminLogin;
-import com.rancho.web.admin.domain.dto.adminDto.AdminUpdate;
+import com.rancho.web.admin.domain.dto.admin.AdminCreate;
+import com.rancho.web.admin.domain.dto.admin.AdminLogin;
+import com.rancho.web.admin.domain.dto.admin.AdminPassword;
+import com.rancho.web.admin.domain.dto.admin.AdminUpdate;
 import com.rancho.web.admin.domain.vo.AdminWithRole;
 import com.rancho.web.common.page.Page;
+import com.rancho.web.db.domain.Admin;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -15,9 +16,13 @@ public interface AdminService {
 
     String login(AdminLogin adminLogin);
 
+    void updateLoginAdminPassword(String oldPassword,String newPassword);
+
     void logout(Admin admin);
 
     Admin getAdminByUsername(String username);
+
+    AdminPassword getAdminPasswordByUsername(String username);
 
     List<Admin> getAdmins(Admin admin, Page page);
 
@@ -26,6 +31,8 @@ public interface AdminService {
     void addAdmin(AdminCreate adminCreate);
 
     void updateAdmin(Integer id,AdminUpdate adminUpdate);
+
+    void updateAdminPassword(Integer id,String password);
 
     void updateAdminStatus(Integer id,Integer status);
 

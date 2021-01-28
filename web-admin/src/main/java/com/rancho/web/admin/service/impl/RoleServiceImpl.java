@@ -1,19 +1,18 @@
 package com.rancho.web.admin.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.rancho.web.admin.domain.Admin;
-import com.rancho.web.admin.domain.Menu;
-import com.rancho.web.admin.domain.Role;
-import com.rancho.web.admin.domain.RoleMenu;
 import com.rancho.web.admin.domain.dto.role.RoleCreate;
 import com.rancho.web.admin.domain.dto.role.RoleUpdate;
 import com.rancho.web.admin.mapper.AdminRoleMapper;
 import com.rancho.web.admin.mapper.RoleMapper;
 import com.rancho.web.admin.mapper.RoleMenuMapper;
-import com.rancho.web.admin.service.MenuService;
 import com.rancho.web.admin.service.RoleService;
-import com.rancho.web.common.common.CommonException;
+import com.rancho.web.common.common.BadRequestException;
 import com.rancho.web.common.page.Page;
+import com.rancho.web.common.result.ResultCode;
+import com.rancho.web.db.domain.Admin;
+import com.rancho.web.db.domain.Role;
+import com.rancho.web.db.domain.RoleMenu;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -93,7 +91,7 @@ public class RoleServiceImpl implements RoleService {
     public void deleteRole(Integer id) {
         int count= adminRoleMapper.getAdminRoleCountByRoleId(id);
         if(count>0){
-            throw new CommonException("该角色已有管理员关联，请先解除关联！");
+            throw new BadRequestException(ResultCode.BAD_REQUEST).message("该角色已有管理员关联，请先解除关联！");
         }
         roleMapper.deleteRole(id);
         roleMenuMapper.deleteRoleMenu(id);
