@@ -14,7 +14,7 @@ public interface AdminMapper {
 
     List<Admin> getAdmins(Admin admin);
 
-    void addAdmin(Admin admin);
+    void addAdmin(AdminPassword adminPassword);
 
     Admin getAdmin(Integer id);
 

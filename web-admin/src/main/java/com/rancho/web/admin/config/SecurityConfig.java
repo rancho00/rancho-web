@@ -109,6 +109,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             AdminPassword adminPassword = adminService.getAdminPasswordByUsername(username);
             if (adminPassword != null) {
                 if(adminPassword.getStatus()==0){
+                    //throw new UsernameNotFoundException("用户名或密码错误");
                     throw new BadRequestException(ResultCode.BAD_REQUEST).message("账号已被停用");
                 }
                 Set<String> permissions=menuService.getAdminMenuPermissions(adminPassword);

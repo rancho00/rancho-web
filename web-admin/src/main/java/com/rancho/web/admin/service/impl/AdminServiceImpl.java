@@ -107,12 +107,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void addAdmin(AdminCreate adminCreate) {
-        Admin admin=adminMapper.getAdminByUsername(adminCreate.getUsername());
+        AdminPassword admin=adminMapper.getAdminPasswordByUsername(adminCreate.getUsername());
         if(admin!=null){
             throw new BadRequestException(ResultCode.BAD_REQUEST).message("管理员已存在");
         }
         adminCreate.setPassword(new BCryptPasswordEncoder().encode(adminCreate.getPassword()));
-        admin=new Admin();
+        admin=new AdminPassword();
         BeanUtils.copyProperties(adminCreate,admin);
         adminMapper.addAdmin(admin);
         //添加角色
