@@ -52,4 +52,8 @@ public class CommonResult<T>{
     public static CommonResult forbidden(){
         return new CommonResult(ResultCode.FORBIDDEN.getCode(),ResultCode.FORBIDDEN.getMessage());
     }
+
+    public static CommonResult error(){
+        return new CommonResult(ResultCode.INTERNAL_SERVER_ERROR.getCode(),ResultCode.INTERNAL_SERVER_ERROR.getMessage());
+    }
 }

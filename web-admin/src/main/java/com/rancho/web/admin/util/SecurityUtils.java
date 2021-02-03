@@ -1,8 +1,7 @@
 package com.rancho.web.admin.util;
 
 import com.rancho.web.admin.domain.bo.AdminUserDetails;
-import com.rancho.web.common.common.UnAuthorizedException;
-import com.rancho.web.common.result.ResultCode;
+import org.springframework.security.access.AccessDeniedException;
 
 public class SecurityUtils {
 
@@ -11,7 +10,7 @@ public class SecurityUtils {
         try {
             adminUserDetails = (AdminUserDetails) org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         } catch (Exception e) {
-            throw new UnAuthorizedException(ResultCode.UNAUTHORIZED);
+            throw new AccessDeniedException("不允许访问");
         }
         return adminUserDetails;
     }

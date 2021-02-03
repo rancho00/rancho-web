@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rancho.web.admin.mapper.ServerMapper">
+    <resultMap id="BaseResultMap" type="com.rancho.web.db.domain.Server">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="account" jdbcType="VARCHAR" property="account" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="ip" jdbcType="VARCHAR" property="ip" />
+        <result column="port" jdbcType="INTEGER" property="port" />
+        <result column="create_admin" jdbcType="VARCHAR" property="createAdmin" />
+        <result column="update_admin" jdbcType="VARCHAR" property="updateAdmin" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+
+    <select id="getServersByDeployId" resultMap="BaseResultMap">
+        select s.* from deploy_server ds left join server s on ds.server_id=s.id where ds.deploy_id=#{deployId}
+    </select>
+
+    <select id="getServers" resultMap="BaseResultMap">
+        select * from server
+        <where>
+            <if test="ip!=null">
+                and ip=#{ip}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addServer" parameterType="com.rancho.web.db.domain.Server">
+        insert into server (ip,account,name,password,port,create_admin,create_time) values (#{ip},#{account},#{name},#{password},#{port},#{createAdmin},#{createTime})
+    </insert>
+
+    <update id="updateServer" parameterType="com.rancho.web.db.domain.Server">
+        update server
+            <set>
+                <if test="account!=null">
+                    account=#{account},
+                </if>
+                <if test="name!=null">
+                    name=#{name},
+                </if>
+                <if test="password!=null">
+                    password=#{password},
+                </if>
+                <if test="ip!=null">
+                    ip=#{ip},
+                </if>
+                <if test="port!=null">
+                    port=#{port},
+                </if>
+                <if test="updateAdmin!=null">
+                    update_admin=#{updateAdmin},
+                </if>
+                <if test="updateTime!=null">
+                    update_time=#{updateTime},
+                </if>
+            </set>
+            where id=#{id}
+    </update>
+
+    <delete id="deleteServer">
+        delete from server where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -35,7 +35,7 @@ public class MenuServiceImpl  implements MenuService {
         List<Menu> menuList= menuMapper.getMenus(null);
         List<MenuNode> menuNodeList=menuList.stream()
                 .filter(menu -> menu.getType().equals(0))
-                .map(menu -> covert(menu,menuList))
+                .map(menu -> covert(menu,menuList,"all"))
                 .collect(Collectors.toList());
         return menuNodeList;
     }
@@ -81,8 +81,8 @@ public class MenuServiceImpl  implements MenuService {
             menus = menuMapper.getAdminMenus(admin.getId());
         }
         List<MenuNode> menuNodes=menus.stream()
-                .filter(menu -> menu.getType().equals(0))
-                .map(menu -> covert(menu,menus))
+                .filter(menu -> menu.getType().equals(0)  && menu.getIsHidden()==0)
+                .map(menu -> covert(menu,menus,"xxx"))
                 .collect(Collectors.toList());
         return menuNodes;
     }
@@ -107,13 +107,20 @@ public class MenuServiceImpl  implements MenuService {
      * @param menuList
      * @return
      */
-    private MenuNode covert(Menu menu, List<Menu> menuList){
+    private MenuNode covert(Menu menu, List<Menu> menuList, String scope){
         MenuNode node = new MenuNode();
         BeanUtils.copyProperties(menu,node);
-        List<Menu> children = menuList.stream()
-                .filter(subMenu -> subMenu.getPid().equals(menu.getId()))
-                .map(subMenu -> covert(subMenu,menuList)).collect(Collectors.toList());
-        node.setChildren(children);
+        if("all".equals(scope)){
+            List<Menu> children = menuList.stream()
+                    .filter(subMenu -> subMenu.getPid().equals(menu.getId()))
+                    .map(subMenu -> covert(subMenu,menuList,scope)).collect(Collectors.toList());
+            node.setChildren(children);
+        }else{
+            List<Menu> children = menuList.stream()
+                    .filter(subMenu -> subMenu.getPid().equals(menu.getId()) && menu.getIsHidden()==0)
+                    .map(subMenu -> covert(subMenu,menuList,scope)).collect(Collectors.toList());
+            node.setChildren(children);
+        }
         return node;
     }
 

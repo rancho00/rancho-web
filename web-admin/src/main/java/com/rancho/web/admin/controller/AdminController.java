@@ -19,6 +19,7 @@ import com.rancho.web.common.util.StringUtils;
 import com.rancho.web.db.domain.Admin;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -126,7 +127,7 @@ public class AdminController {
     @PostMapping
     @ResponseBody
     @PreAuthorize("hasAuthority('admin:add')")
-    public ResponseEntity<CommonResult> addAdmin(@Validated @RequestBody AdminCreate adminCreate) {
+    public ResponseEntity<CommonResult> addAdmin(@Validated({Insert.class}) @RequestBody AdminCreate adminCreate) {
         adminService.addAdmin(adminCreate);
         return ResponseEntity.ok(CommonResult.ok());
     }

@@ -1,11 +1,12 @@
 package com.rancho.web.admin.component;
 
 import com.rancho.web.common.common.BadRequestException;
-import com.rancho.web.common.common.UnAuthorizedException;
 import com.rancho.web.common.result.CommonResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,22 +15,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class RestExceptionHandler {
 
     /**
      * 全局异常<br>
      *     与security exception有冲突，不会执行RestAccessDeniedHandler和RestAuthenticationEntryPoint
-     * @param exception
+     *     直接捕获AccessDeniedException，AuthenticationException异常
+     * @param e
      * @return
      */
-//    @ExceptionHandler
-//    @ResponseBody
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public String handleException(Exception exception) {
-//        log.error(exception.getMessage());
-//        return exception.getMessage();
-//    }
+    @ExceptionHandler
+    public ResponseEntity<CommonResult> handleException(Exception e) {
+        log.error("全局异常-------->：{}",e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(CommonResult.error());
+    }
 
     /**
      * 处理不带任何注解的参数绑定校验异常
@@ -43,6 +44,7 @@ public class RestExceptionHandler {
                 .map(objectError -> ((FieldError)objectError).getField() + ((FieldError)objectError).getDefaultMessage())
                 .collect(Collectors.joining(","));
         //"errorMsg": "name不能为空,age最小不能小于18"
+        log.error("参数绑定异常-------->：{}",errorMsg);
         return ResponseEntity.badRequest().body(CommonResult.badRequest(errorMsg));
     }
 
@@ -57,9 +59,9 @@ public class RestExceptionHandler {
                 .stream()
                 .map(objectError -> ((FieldError)objectError).getDefaultMessage())
                 .collect(Collectors.joining(","));
+        log.error("RequestBody参数绑定异常-------->：{}",errorMsg);
         return ResponseEntity.badRequest().body(CommonResult.badRequest(errorMsg));
     }
-
 
     /**
      * 处理badRequestException异常
@@ -67,28 +69,31 @@ public class RestExceptionHandler {
      * @return
      */
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<CommonResult> handleCustomException(BadRequestException badRequestException){
+    public ResponseEntity<CommonResult> handleBadRequestException(BadRequestException badRequestException){
+        log.error("错误请求异常-------->：{}",badRequestException.getResultCode().getMessage());
         return ResponseEntity.badRequest().body(new CommonResult(badRequestException.getResultCode().getCode(),badRequestException.getResultCode().getMessage()));
     }
 
     /**
-     * 处理unAuthorizedException异常
-     * @param unAuthorizedException
+     * 处理accessDeniedException异常
+     * @param accessDeniedException
      * @return
      */
-    @ExceptionHandler(UnAuthorizedException.class)
-    public ResponseEntity<CommonResult> handleUnAuthorizedException(UnAuthorizedException unAuthorizedException){
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new CommonResult(unAuthorizedException.getResultCode().getCode(),unAuthorizedException.getResultCode().getMessage()));
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity handleAccessDeniedException(AccessDeniedException accessDeniedException){
+        log.error("没有权限异常-------->：{}",accessDeniedException.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(CommonResult.forbidden());
     }
 
-//    /**
-//     * 处理NotLoginException异常
-//     * @param notLoginException
-//     * @return
-//     */
-//    @ExceptionHandler(NotLoginException.class)
-//    public ResponseEntity<CommonResult> handleNotLoginException(NotLoginException notLoginException){
-//        return ResponseEntity.badRequest().body(new CommonResult().badRequest(""));
-//    }
+    /**
+     * 处理authenticationException异常
+     * @param authenticationException
+     * @return
+     */
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity handleAuthenticationException(AuthenticationException authenticationException){
+        log.error("没有认证异常-------->：{}",authenticationException.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResult.unauthorized());
+    }
 
 }

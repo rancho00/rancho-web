@@ -132,12 +132,14 @@ public class AdminServiceImpl implements AdminService {
         adminMapper.updateAdmin(admin);
         //先删除角色再添加角色
         adminRoleMapper.deleteByAdminId(adminUpdate.getId());
-        for(Integer roleId: adminUpdate.getRoleIds()){
-            AdminRole adminRole =new AdminRole();
-            adminRole.setAdminId(adminUpdate.getId());
-            adminRole.setRoleId(roleId);
-            adminRole.setCreateTime(new Date());
-            adminRoleMapper.addAdminRole(adminRole);
+        if(!"admin".equals(admin.getType())){
+            for(Integer roleId: adminUpdate.getRoleIds()){
+                AdminRole adminRole =new AdminRole();
+                adminRole.setAdminId(adminUpdate.getId());
+                adminRole.setRoleId(roleId);
+                adminRole.setCreateTime(new Date());
+                adminRoleMapper.addAdminRole(adminRole);
+            }
         }
     }
 

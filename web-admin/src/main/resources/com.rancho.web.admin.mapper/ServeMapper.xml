@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rancho.web.admin.mapper.ServeMapper">
+    <resultMap id="BaseResultMap" type="com.rancho.web.db.domain.Serve">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="upload_path" jdbcType="VARCHAR" property="uploadPath" />
+        <result column="deploy_path" jdbcType="VARCHAR" property="deployPath" />
+        <result column="backup_path" jdbcType="VARCHAR" property="backupPath" />
+        <result column="port" jdbcType="INTEGER" property="port" />
+        <result column="start_script" jdbcType="VARCHAR" property="startScript" />
+        <result column="deploy_script" jdbcType="VARCHAR" property="deployScript" />
+        <result column="create_admin" jdbcType="VARCHAR" property="createAdmin" />
+        <result column="update_admin" jdbcType="VARCHAR" property="updateAdmin" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+
+    <select id="getServes" resultMap="BaseResultMap">
+        select * from serve
+    </select>
+
+    <insert id="addServe" parameterType="com.rancho.web.db.domain.Serve">
+        insert into serve (name,port,upload_path,deploy_path,backup_path,start_script,deploy_script,create_admin,create_time)
+        values (#{name},#{port},#{uploadPath},#{deployPath},#{backupPath},#{startScript},#{deployScript},#{createAdmin},#{createTime})
+    </insert>
+
+    <update id="updateServe" parameterType="com.rancho.web.db.domain.Serve">
+        update serve
+            <set>
+                <if test="name!=null">
+                    name=#{name},
+                </if>
+                <if test="name!=null">
+                    name=#{name},
+                </if>
+                <if test="name!=null">
+                    name=#{name},
+                </if>
+                <if test="name!=null">
+                    name=#{name},
+                </if>
+                <if test="name!=null">
+                    name=#{name},
+                </if>
+            </set>
+            where id=#{id}
+    </update>
+
+    <delete id="deleteServe">
+        delete from serve where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

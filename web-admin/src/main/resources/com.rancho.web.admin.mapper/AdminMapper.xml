@@ -53,6 +53,9 @@
             <if test="status!=null">
                 status=#{status},
             </if>
+            <if test="type!=null">
+                type=#{type},
+            </if>
         </set>
         where id=#{id}
     </update>

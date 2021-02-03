@@ -8,6 +8,7 @@ import com.rancho.web.admin.domain.dto.admin.AdminPassword;
 import com.rancho.web.admin.service.AdminService;
 import com.rancho.web.admin.service.MenuService;
 import com.rancho.web.common.common.BadRequestException;
+import com.rancho.web.common.result.CommonResult;
 import com.rancho.web.common.result.ResultCode;
 import com.rancho.web.db.domain.Admin;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/druid/**")
                 .permitAll()
+                .antMatchers("/actuator/**")
+                .permitAll()
                 .antMatchers(HttpMethod.OPTIONS)
                 .permitAll()
                 .anyRequest()
@@ -79,9 +82,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.headers().frameOptions().disable();
         httpSecurity.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         //添加自定义未授权和未登录结果返回
-        httpSecurity.exceptionHandling()
-                .accessDeniedHandler(restfulAccessDeniedHandler)
-                .authenticationEntryPoint(restAuthenticationEntryPoint);
+//        httpSecurity.exceptionHandling()
+//                .accessDeniedHandler(restfulAccessDeniedHandler)
+//                .authenticationEntryPoint(restAuthenticationEntryPoint);
     }
 
     @Override
@@ -109,13 +112,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             AdminPassword adminPassword = adminService.getAdminPasswordByUsername(username);
             if (adminPassword != null) {
                 if(adminPassword.getStatus()==0){
-                    //throw new UsernameNotFoundException("用户名或密码错误");
                     throw new BadRequestException(ResultCode.BAD_REQUEST).message("账号已被停用");
                 }
                 Set<String> permissions=menuService.getAdminMenuPermissions(adminPassword);
                 return new AdminUserDetails(adminPassword, permissions);
             }
-            throw new UsernameNotFoundException("用户名或密码错误");
+            throw new BadRequestException(ResultCode.BAD_REQUEST).message("账号或密码错误");
         };
     }
 
