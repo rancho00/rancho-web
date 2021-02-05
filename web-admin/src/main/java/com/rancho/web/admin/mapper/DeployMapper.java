@@ -17,5 +17,5 @@ public interface DeployMapper {
 
     void deleteDeploy(@Param("ids") Integer[] ids);
 
-    Deploy getDeploy(@Param("id") Integer id);
+    DeployInfo getDeployInfo(@Param("id") Integer id);
 }

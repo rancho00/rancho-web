@@ -21,6 +21,25 @@
                 LEFT JOIN serve s ON d.serve_id = s.id
     </select>
 
+    <select id="getDeployInfo" resultType="com.rancho.web.admin.domain.dto.deploy.DeployInfo">
+        SELECT
+            d.id,
+            d.serve_id serveId,
+            d.create_time createTime,
+            s.id 'serve.id',
+            s.name 'serve.name',
+            s.port 'serve.port',
+            s.id 'serve.id',
+            s.upload_path 'serve.uploadPath',
+            s.deploy_path 'serve.deployPath',
+            s.backup_path 'serve.backupPath',
+            s.start_script 'serve.startScript',
+            s.deploy_script 'serve.deployScript'
+        FROM
+            deploy d
+                LEFT JOIN serve s ON d.serve_id = s.id  where d.id=#{id}
+    </select>
+
     <insert id="addDeploy" parameterType="com.rancho.web.db.domain.Deploy" useGeneratedKeys="true" keyProperty="id">
         insert into deploy (serve_id,create_admin,create_time)
         values (#{serveId},#{createAdmin},#{createTime})

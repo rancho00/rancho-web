@@ -26,24 +26,25 @@
     </insert>
 
     <update id="updateServe" parameterType="com.rancho.web.db.domain.Serve">
-        update serve
-            <set>
+        update serve set update_admin=#{updateAdmin},update_time=#{updateTime}
                 <if test="name!=null">
-                    name=#{name},
+                    ,name=#{name}
                 </if>
-                <if test="name!=null">
-                    name=#{name},
+                <if test="port!=null">
+                    ,port=#{port}
                 </if>
-                <if test="name!=null">
-                    name=#{name},
+                <if test="uploadPath!=null">
+                    ,upload_path=#{uploadPath}
                 </if>
-                <if test="name!=null">
-                    name=#{name},
+                <if test="backupPath!=null">
+                    ,backup_path=#{backupPath}
                 </if>
-                <if test="name!=null">
-                    name=#{name},
+                <if test="startScript!=null">
+                    ,start_script=#{startScript}
                 </if>
-            </set>
+                <if test="deployScript!=null">
+                    ,deploy_script=#{deployScript}
+                </if>
             where id=#{id}
     </update>
 

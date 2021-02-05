@@ -7,7 +7,9 @@ import com.rancho.web.admin.domain.serve.ServeParam;
 import com.rancho.web.admin.domain.serve.ServeUpdate;
 import com.rancho.web.admin.mapper.ServeMapper;
 import com.rancho.web.admin.service.ServeService;
+import com.rancho.web.common.common.BadRequestException;
 import com.rancho.web.common.page.Page;
+import com.rancho.web.common.result.ResultCode;
 import com.rancho.web.db.domain.Serve;
 import com.rancho.web.db.domain.Server;
 import org.springframework.beans.BeanUtils;
@@ -38,10 +40,25 @@ public class ServeServiceImpl implements ServeService {
     public void addServe(ServeCreate serveCreate) {
         Serve serve=new Serve();
         BeanUtils.copyProperties(serveCreate,serve);
+        verification(serve);
         AdminUserDetails adminUserDetails = (AdminUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         serve.setCreateAdmin(adminUserDetails.getUsername());
         serve.setCreateTime(new Date());
         serveMapper.addServe(serve);
+    }
+
+    private void verification(Serve serve){
+        String opt = "/opt";
+        String home = "/home";
+        if (!(serve.getUploadPath().startsWith(opt) || serve.getUploadPath().startsWith(home))) {
+            throw new BadRequestException(ResultCode.BAD_REQUEST).message("文件只能上传在opt目录或者home目录 ");
+        }
+        if (!(serve.getDeployPath().startsWith(opt) || serve.getDeployPath().startsWith(home))) {
+            throw new BadRequestException(ResultCode.BAD_REQUEST).message("文件只能部署在opt目录或者home目录 ");
+        }
+        if (!(serve.getBackupPath().startsWith(opt) || serve.getBackupPath().startsWith(home))) {
+            throw new BadRequestException(ResultCode.BAD_REQUEST).message("文件只能备份在opt目录或者home目录 ");
+        }
     }
 
     @Override
@@ -49,6 +66,7 @@ public class ServeServiceImpl implements ServeService {
         Serve serve=new Serve();
         serve.setId(id);
         BeanUtils.copyProperties(serveUpdate,serve);
+        verification(serve);
         AdminUserDetails adminUserDetails = (AdminUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         serve.setUpdateAdmin(adminUserDetails.getUsername());
         serve.setUpdateTime(new Date());

@@ -1,5 +1,7 @@
 package com.rancho.web.admin.websocket;
 
+import com.alibaba.fastjson.JSONObject;
+
 import javax.websocket.Session;
 import java.io.IOException;
 import java.util.Map;
@@ -33,8 +35,11 @@ public class WebSocketHolder {
         }
     }
 
-    public static void send(String id,String msg){
+    public static void send(String id,SocketMsg socketMsg) throws IOException {
         Session session=clients.get(id);
-        session.getAsyncRemote().sendText(msg);
+        if(session!=null && session.isOpen()){
+            String message = JSONObject.toJSONString(socketMsg);
+            session.getBasicRemote().sendText(message);
+        }
     }
 }

@@ -24,7 +24,7 @@ public class Serve {
     private String backupPath;
 
     @ApiModelProperty(value = "端口")
-    private String port;
+    private Integer port;
 
     @ApiModelProperty(value = "启动脚本")
     private String startScript;
