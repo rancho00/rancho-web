@@ -15,17 +15,15 @@
  */
 package com.rancho.web.admin.websocket;
 
-/**
- * @author ZhangHouYing
- * @date 2019-08-10 9:56
- */
-public enum MsgType {
-	/** 连接 */
-	CONNECT,
-	/** 关闭 */
-	CLOSE,
-	/** 信息 */
-	INFO,
-	/** 错误 */
-	ERROR
+import lombok.Data;
+
+@Data
+public class BoxMsg {
+	private String msg;
+	private BoxType boxType;
+
+	public BoxMsg(String msg, BoxType boxType) {
+		this.msg = msg;
+		this.boxType = boxType;
+	}
 }

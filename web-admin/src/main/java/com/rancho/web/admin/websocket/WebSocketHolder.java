@@ -35,11 +35,18 @@ public class WebSocketHolder {
         }
     }
 
-    public static void send(String id,SocketMsg socketMsg) throws IOException {
+    public static void send(String id, BoxMsg boxMsg) throws IOException {
         Session session=clients.get(id);
         if(session!=null && session.isOpen()){
-            String message = JSONObject.toJSONString(socketMsg);
+            String message = JSONObject.toJSONString(boxMsg);
             session.getBasicRemote().sendText(message);
+        }
+    }
+
+    public static void send(String id, String msg) throws IOException {
+        Session session=clients.get(id);
+        if(session!=null && session.isOpen()){
+            session.getBasicRemote().sendText(msg);
         }
     }
 }

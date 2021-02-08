@@ -15,19 +15,17 @@
  */
 package com.rancho.web.admin.websocket;
 
-import lombok.Data;
-
 /**
  * @author ZhangHouYing
- * @date 2019-08-10 9:55
+ * @date 2019-08-10 9:56
  */
-@Data
-public class SocketMsg {
-	private String msg;
-	private MsgType msgType;
-
-	public SocketMsg(String msg, MsgType msgType) {
-		this.msg = msg;
-		this.msgType = msgType;
-	}
+public enum BoxType {
+	/** 连接 */
+	CONNECT,
+	/** 关闭 */
+	CLOSE,
+	/** 信息 */
+	INFO,
+	/** 错误 */
+	ERROR
 }

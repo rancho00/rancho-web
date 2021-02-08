@@ -4,12 +4,14 @@ import cn.hutool.core.io.IoUtil;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Vector;
 
+@Slf4j
 public class ShellUtil {
     private Vector<String> stdout;
 
@@ -23,7 +25,7 @@ public class ShellUtil {
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect(3000);
         } catch (Exception e) {
-            //log.error(e.getMessage(),e);
+            log.error(e.getMessage(),e);
         }
 
     }
@@ -65,12 +67,17 @@ public class ShellUtil {
         }
     }
 
-    public String executeForResult(String command) {
+    public String executeForString(String command) {
         execute(command);
         StringBuilder sb = new StringBuilder();
         for (String str : stdout) {
             sb.append(str);
         }
         return sb.toString();
+    }
+
+    public Vector<String> executeForCollect(String command) {
+        execute(command);
+        return stdout;
     }
 }

@@ -12,19 +12,17 @@ import com.rancho.web.admin.mapper.DeployMapper;
 import com.rancho.web.admin.mapper.DeployServerMapper;
 import com.rancho.web.admin.mapper.ServerMapper;
 import com.rancho.web.admin.service.DeployService;
-import com.rancho.web.admin.util.ExecuteShellUtil;
 import com.rancho.web.admin.util.ScpClientUtil;
 import com.rancho.web.admin.util.SecurityUtils;
-import com.rancho.web.admin.websocket.MsgType;
-import com.rancho.web.admin.websocket.SocketMsg;
+import com.rancho.web.admin.util.ShellUtil;
+import com.rancho.web.admin.websocket.BoxType;
+import com.rancho.web.admin.websocket.BoxMsg;
 import com.rancho.web.admin.websocket.WebSocketHolder;
 import com.rancho.web.common.common.BadRequestException;
 import com.rancho.web.common.page.Page;
 import com.rancho.web.common.result.ResultCode;
 import com.rancho.web.db.domain.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.buf.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -129,13 +127,13 @@ public class DeployServiceImpl implements DeployService {
 
         DeployInfo deployInfo = getDeployInfo(id);
         if (deployInfo == null) {
-            WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg("部署信息不存在", MsgType.ERROR));
+            WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg("部署信息不存在", BoxType.ERROR));
             throw new BadRequestException(ResultCode.BAD_REQUEST).message("部署信息不存在");
         }
 
         Serve serve = deployInfo.getServe();
         if (serve == null) {
-            WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg("包对应服务信息不存在", MsgType.ERROR));
+            WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg("包对应服务信息不存在", BoxType.ERROR));
             throw new BadRequestException(ResultCode.BAD_REQUEST).message("包对应服务信息不存在");
         }
 
@@ -145,41 +143,41 @@ public class DeployServiceImpl implements DeployService {
         String msg;
         List<Server> servers = deployInfo.getServers();
         for (Server server : servers) {
-            ExecuteShellUtil executeShellUtil = getExecuteShellUtil(server);
+            ShellUtil ShellUtil = getShellUtil(server);
             //判断是否第一次部署
-            boolean flag = checkFile(executeShellUtil, serve);
+            boolean flag = checkFile(ShellUtil, serve);
             //第一步要确认服务器上有这个目录
-            executeShellUtil.execute("mkdir -p " + serve.getUploadPath());
-            executeShellUtil.execute("mkdir -p " + serve.getBackupPath());
-            executeShellUtil.execute("mkdir -p " + serve.getDeployPath());
+            ShellUtil.execute("mkdir -p " + serve.getUploadPath());
+            ShellUtil.execute("mkdir -p " + serve.getBackupPath());
+            ShellUtil.execute("mkdir -p " + serve.getDeployPath());
             //上传文件
             msg = String.format("登陆到服务器:%s", server.getIp());
             ScpClientUtil scpClientUtil = getScpClientUtil(server);
             log.info(msg);
-            WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg(msg, MsgType.INFO));
+            WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg(msg, BoxType.INFO));
             msg = String.format("上传文件到服务器:%s<br>目录:%s下，请稍等...", server.getIp(), serve.getUploadPath());
-            WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg(msg, MsgType.INFO));
+            WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg(msg, BoxType.INFO));
             scpClientUtil.putFile(fileSavePath, serve.getUploadPath());
             if (flag) {
-                WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg(msg, MsgType.INFO));
-                WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg("停止原来应用", MsgType.INFO));
+                WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg(msg, BoxType.INFO));
+                WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg("停止原来应用", BoxType.INFO));
                 //停止应用
-                stopApp(port, executeShellUtil);
-                WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg("备份原来应用", MsgType.INFO));
+                stopApp(port, ShellUtil);
+                WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg("备份原来应用", BoxType.INFO));
                 //备份应用
-                backupApp(executeShellUtil, server.getIp(), serve.getDeployPath() + FILE_SEPARATOR, serve.getName(), serve.getBackupPath() + FILE_SEPARATOR, id);
+                backupApp(ShellUtil, server.getIp(), serve.getDeployPath() + FILE_SEPARATOR, serve.getName(), serve.getBackupPath() + FILE_SEPARATOR, id);
             }
-            WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg("部署应用", MsgType.INFO));
+            WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg("部署应用", BoxType.INFO));
             //部署文件,并启动应用
             String deployScript = serve.getDeployScript();
-            executeShellUtil.execute(deployScript);
+            ShellUtil.execute(deployScript);
             sleep(3);
-            WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg("应用部署中，请耐心等待部署结果，或者稍后手动查看部署状态", MsgType.INFO));
+            WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg("应用部署中，请耐心等待部署结果，或者稍后手动查看部署状态", BoxType.INFO));
             int i = 0;
             boolean result = false;
             // 由于启动应用需要时间，所以需要循环获取状态，如果超过30次，则认为是启动失败
             while (i++ < count) {
-                result = checkIsRunningStatus(port, executeShellUtil);
+                result = checkIsRunningStatus(port, ShellUtil);
                 if (result) {
                     break;
                 }
@@ -188,7 +186,7 @@ public class DeployServiceImpl implements DeployService {
             }
             sb.append("服务器:").append(server.getName()).append("<br>应用:").append(serve.getName());
             sendResultMsg(result, sb);
-            executeShellUtil.close();
+            ShellUtil.close();
         }
     }
 
@@ -199,7 +197,7 @@ public class DeployServiceImpl implements DeployService {
         String deployDate = DateUtil.format(deployHistory.getCreateTime(), DatePattern.PURE_DATETIME_PATTERN);
         Serve serve = deployInfo.getServe();
         if (serve == null) {
-            WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg("应用信息不存在：" + deployHistory.getServeName(), MsgType.ERROR));
+            WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg("应用信息不存在：" + deployHistory.getServeName(), BoxType.ERROR));
             throw new BadRequestException(ResultCode.BAD_REQUEST).message("应用信息不存在：" + deployHistory.getServeName());
         }
         String backupPath = serve.getBackupPath()+FILE_SEPARATOR;
@@ -207,29 +205,29 @@ public class DeployServiceImpl implements DeployService {
         //这个是服务器部署路径
         String deployPath = serve.getDeployPath();
         String ip = deployHistory.getIp();
-        ExecuteShellUtil executeShellUtil = getExecuteShellUtil(deployInfo.getServers().get(0));
+        ShellUtil ShellUtil = getShellUtil(deployInfo.getServers().get(0));
         String msg;
 
         msg = String.format("登陆到服务器:%s", ip);
         log.info(msg);
-        WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg(msg, MsgType.INFO));
-        WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg("停止原来应用", MsgType.INFO));
+        WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg(msg, BoxType.INFO));
+        WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg("停止原来应用", BoxType.INFO));
         //停止应用
-        stopApp(serve.getPort(), executeShellUtil);
+        stopApp(serve.getPort(), ShellUtil);
         //删除原来应用
-        WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg("删除应用", MsgType.INFO));
-        executeShellUtil.execute("rm -rf " + deployPath + FILE_SEPARATOR + deployHistory.getServeName());
+        WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg("删除应用", BoxType.INFO));
+        ShellUtil.execute("rm -rf " + deployPath + FILE_SEPARATOR + deployHistory.getServeName());
         //还原应用
-        WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg("还原应用", MsgType.INFO));
-        executeShellUtil.execute("cp -r " + backupPath + "/. " + deployPath);
-        WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg("启动应用", MsgType.INFO));
-        executeShellUtil.execute(serve.getStartScript());
-        WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg("应用启动中，请耐心等待启动结果，或者稍后手动查看启动状态", MsgType.INFO));
+        WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg("还原应用", BoxType.INFO));
+        ShellUtil.execute("cp -r " + backupPath + "/. " + deployPath);
+        WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg("启动应用", BoxType.INFO));
+        ShellUtil.execute(serve.getStartScript());
+        WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg("应用启动中，请耐心等待启动结果，或者稍后手动查看启动状态", BoxType.INFO));
         int i  = 0;
         boolean result = false;
         // 由于启动应用需要时间，所以需要循环获取状态，如果超过30次，则认为是启动失败
         while (i++ < count){
-            result = checkIsRunningStatus(serve.getPort(), executeShellUtil);
+            result = checkIsRunningStatus(serve.getPort(), ShellUtil);
             if(result){
                 break;
             }
@@ -239,7 +237,7 @@ public class DeployServiceImpl implements DeployService {
         StringBuilder sb = new StringBuilder();
         sb.append("服务器:").append(ip).append("<br>应用:").append(deployHistory.getServeName());
         sendResultMsg(result, sb);
-        executeShellUtil.close();
+        ShellUtil.close();
     }
 
     @Override
@@ -249,18 +247,18 @@ public class DeployServiceImpl implements DeployService {
         Serve serve = deployInfo.getServe();
         for (Server server : servers) {
             StringBuilder sb = new StringBuilder();
-            ExecuteShellUtil executeShellUtil = getExecuteShellUtil(server);
+            ShellUtil ShellUtil = getShellUtil(server);
             sb.append("服务器:").append(server.getName()).append("<br>应用:").append(serve.getName());
-            boolean result = checkIsRunningStatus(serve.getPort(), executeShellUtil);
+            boolean result = checkIsRunningStatus(serve.getPort(), ShellUtil);
             if (result) {
                 sb.append("<br>正在运行");
-                WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg(sb.toString(), MsgType.INFO));
+                WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg(sb.toString(), BoxType.INFO));
             } else {
                 sb.append("<br>已停止!");
-                WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg(sb.toString(), MsgType.INFO));
+                WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg(sb.toString(), BoxType.INFO));
             }
             log.info(sb.toString());
-            executeShellUtil.close();
+            ShellUtil.close();
         }
     }
 
@@ -271,19 +269,19 @@ public class DeployServiceImpl implements DeployService {
         Serve serve = deployInfo.getServe();
         for (Server server : servers) {
             StringBuilder sb = new StringBuilder();
-            ExecuteShellUtil executeShellUtil = getExecuteShellUtil(server);
+            ShellUtil ShellUtil = getShellUtil(server);
             //为了防止重复启动，这里先停止应用
-            stopApp(serve.getPort(), executeShellUtil);
+            stopApp(serve.getPort(), ShellUtil);
             sb.append("服务器:").append(server.getName()).append("<br>应用:").append(serve.getName());
-            WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg("下发启动命令", MsgType.INFO));
-            executeShellUtil.execute(serve.getStartScript());
+            WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg("下发启动命令", BoxType.INFO));
+            ShellUtil.execute(serve.getStartScript());
             sleep(3);
-            WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg("应用启动中，请耐心等待启动结果，或者稍后手动查看运行状态", MsgType.INFO));
+            WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg("应用启动中，请耐心等待启动结果，或者稍后手动查看运行状态", BoxType.INFO));
             int i  = 0;
             boolean result = false;
             // 由于启动应用需要时间，所以需要循环获取状态，如果超过30次，则认为是启动失败
             while (i++ < count){
-                result = checkIsRunningStatus(serve.getPort(), executeShellUtil);
+                result = checkIsRunningStatus(serve.getPort(), ShellUtil);
                 if(result){
                     break;
                 }
@@ -292,7 +290,7 @@ public class DeployServiceImpl implements DeployService {
             }
             sendResultMsg(result, sb);
             log.info(sb.toString());
-            executeShellUtil.close();
+            ShellUtil.close();
         }
     }
 
@@ -303,31 +301,31 @@ public class DeployServiceImpl implements DeployService {
         Serve serve = deployInfo.getServe();
         for (Server server : servers) {
             StringBuilder sb = new StringBuilder();
-            ExecuteShellUtil executeShellUtil = getExecuteShellUtil(server);
+            ShellUtil ShellUtil = getShellUtil(server);
             sb.append("服务器:").append(server.getName()).append("<br>应用:").append(serve.getName());
-            WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg("下发停止命令", MsgType.INFO));
+            WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg("下发停止命令", BoxType.INFO));
             //停止应用
-            stopApp(serve.getPort(), executeShellUtil);
+            stopApp(serve.getPort(), ShellUtil);
             sleep(1);
-            boolean result = checkIsRunningStatus(serve.getPort(), executeShellUtil);
+            boolean result = checkIsRunningStatus(serve.getPort(), ShellUtil);
             if (result) {
                 sb.append("<br>关闭失败!");
-                WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg(sb.toString(), MsgType.ERROR));
+                WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg(sb.toString(), BoxType.ERROR));
             } else {
                 sb.append("<br>关闭成功!");
-                WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg(sb.toString(), MsgType.INFO));
+                WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg(sb.toString(), BoxType.INFO));
             }
             log.info(sb.toString());
-            executeShellUtil.close();
+            ShellUtil.close();
         }
     }
 
-    private ExecuteShellUtil getExecuteShellUtil(Server server) {
-        return new ExecuteShellUtil(server.getIp(), server.getAccount(), server.getPassword(),server.getPort());
+    private ShellUtil getShellUtil(Server server) {
+        return new ShellUtil(server.getIp(), server.getAccount(), server.getPassword(),server.getPort());
     }
 
-    private boolean checkFile(ExecuteShellUtil executeShellUtil, Serve serve) {
-        String result = executeShellUtil.executeForResult("find " + serve.getDeployPath() + " -name " + serve.getName());
+    private boolean checkFile(ShellUtil ShellUtil, Serve serve) {
+        String result = ShellUtil.executeForString("find " + serve.getDeployPath() + " -name " + serve.getName());
         return result.indexOf(serve.getName())>0;
     }
 
@@ -335,12 +333,12 @@ public class DeployServiceImpl implements DeployService {
         return ScpClientUtil.getInstance(server.getIp(), server.getPort(), server.getAccount(), server.getPassword());
     }
 
-    private void stopApp(int port, ExecuteShellUtil executeShellUtil) {
-        executeShellUtil.execute(String.format("lsof -i :%d|grep -v \"PID\"|awk '{print \"kill -9\",$2}'|sh", port));
+    private void stopApp(int port, ShellUtil ShellUtil) {
+        ShellUtil.execute(String.format("lsof -i :%d|grep -v \"PID\"|awk '{print \"kill -9\",$2}'|sh", port));
 
     }
 
-    private void backupApp(ExecuteShellUtil executeShellUtil, String ip, String fileSavePath, String appName, String backupPath, Integer id) {
+    private void backupApp(ShellUtil ShellUtil, String ip, String fileSavePath, String appName, String backupPath, Integer id) {
         String deployDate = DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN);
         StringBuilder sb = new StringBuilder();
         backupPath += appName + FILE_SEPARATOR + deployDate + "\n";
@@ -348,7 +346,7 @@ public class DeployServiceImpl implements DeployService {
         sb.append("mv -f ").append(fileSavePath);
         sb.append(appName).append(" ").append(backupPath);
         log.info("备份应用脚本:" + sb.toString());
-        executeShellUtil.execute(sb.toString());
+        ShellUtil.execute(sb.toString());
         //还原信息入库
         DeployHistory deployHistory = new DeployHistory();
         deployHistory.setServeName(appName);
@@ -358,18 +356,18 @@ public class DeployServiceImpl implements DeployService {
         deployHistoryMapper.addDeployHistory(deployHistory);
     }
 
-    private boolean checkIsRunningStatus(int port, ExecuteShellUtil executeShellUtil) {
-        String result = executeShellUtil.executeForResult(String.format("fuser -n tcp %d", port));
+    private boolean checkIsRunningStatus(int port, ShellUtil ShellUtil) {
+        String result = ShellUtil.executeForString(String.format("fuser -n tcp %d", port));
         return result.indexOf("/tcp:")>0;
     }
 
     private void sendResultMsg(boolean result, StringBuilder sb) throws IOException {
         if (result) {
             sb.append("<br>启动成功!");
-            WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg(sb.toString(), MsgType.INFO));
+            WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg(sb.toString(), BoxType.INFO));
         } else {
             sb.append("<br>启动失败!");
-            WebSocketHolder.send(SecurityUtils.getUsername(), new SocketMsg(sb.toString(), MsgType.ERROR));
+            WebSocketHolder.send(SecurityUtils.getUsername(), new BoxMsg(sb.toString(), BoxType.ERROR));
         }
     }
 
