@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rancho.web.admin.domain.bo.AdminUserDetails;
 import com.rancho.web.admin.domain.dto.deploy.DeployInfo;
+import com.rancho.web.admin.service.MonitorService;
 import com.rancho.web.admin.util.SecurityUtils;
 import com.rancho.web.admin.util.ShellUtil;
 import com.rancho.web.admin.util.SpringBeanFactory;
@@ -67,9 +68,9 @@ public class WebSocketServer {
             //ObjectMapper mapper = new ObjectMapper();
             //Msg newFriend = mapper.readValue(message, Msg.class);
             String type=jsonObject.getString("type");
-            String data=jsonObject.getString("data");
             switch (type){
                 case "log":
+                    String data=jsonObject.getString("data");
                     JSONObject jb=JSONObject.parseObject(data);
                     Integer count=jb.getInteger("count");
                     DeployInfo deployInfo=JSONObject.parseObject(jb.getString("deploy"), DeployInfo.class);
@@ -83,7 +84,9 @@ public class WebSocketServer {
                     session.getBasicRemote().sendText(JSON.toJSONString(resMap));
                     break;
                 case "monitor":
-
+                    MonitorService monitorService=SpringBeanFactory.getBean(MonitorService.class);
+                    Map<String,Object> res=monitorService.getServeInfo();
+                    session.getBasicRemote().sendText(JSON.toJSONString(res));
                     break;
                 default:
             }
