@@ -29,6 +29,16 @@ public class MonitorServiceImpl implements MonitorService {
         return res;
     }
 
+    @Override
+    public Map<String, Object> getServerInfo() {
+        Map<String,Object> res=new HashMap<>();
+        res.put("cpu",getCpuInfo());
+        res.put("heap",getHeapInfo());
+        res.put("classes",getClassesInfo());
+        res.put("threads",getThreadsInfo());
+        return res;
+    }
+
     private Cpu getCpuInfo(){
         MetricsEndpoint.MetricResponse metricResponse=metricsEndpoint.metric("system.cpu.usage",null);
         List<MetricsEndpoint.Sample> samples=metricResponse.getMeasurements();

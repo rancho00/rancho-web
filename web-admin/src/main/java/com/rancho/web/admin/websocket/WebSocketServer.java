@@ -23,7 +23,7 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.*;
 
-@ServerEndpoint("/webSocket/{username}")
+@ServerEndpoint("/websocket/{username}")
 @Component
 @Slf4j
 public class WebSocketServer {
@@ -58,7 +58,9 @@ public class WebSocketServer {
     }
 
     /**
-     * 收到客户端发来消息
+     * 收到客户端发来消息<br>
+     *     message:
+     *          {"type":"log","data":xxx}
      * @param message  消息对象
      */
     @OnMessage
@@ -83,12 +85,18 @@ public class WebSocketServer {
                     }
                     session.getBasicRemote().sendText(JSON.toJSONString(resMap));
                     break;
-                case "monitor":
+                case "serve":
                     MonitorService monitorService=SpringBeanFactory.getBean(MonitorService.class);
                     Map<String,Object> res=monitorService.getServeInfo();
                     session.getBasicRemote().sendText(JSON.toJSONString(res));
                     break;
+                case "server":
+                    monitorService=SpringBeanFactory.getBean(MonitorService.class);
+                    res=monitorService.getServerInfo();
+                    session.getBasicRemote().sendText(JSON.toJSONString(res));
+                    break;
                 default:
+                    session.getBasicRemote().sendText("无效类型");
             }
         }catch (Exception e){
             e.printStackTrace();

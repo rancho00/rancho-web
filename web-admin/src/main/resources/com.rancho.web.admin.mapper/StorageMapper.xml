@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rancho.web.admin.mapper.StorageMapper">
+    <resultMap id="BaseResultMap" type="com.rancho.web.db.domain.Storage">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="real_name" jdbcType="VARCHAR" property="realName" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="suffix" jdbcType="VARCHAR" property="suffix" />
+        <result column="path" jdbcType="VARCHAR" property="path" />
+        <result column="type" jdbcType="VARCHAR" property="type" />
+        <result column="size" jdbcType="VARCHAR" property="size" />
+    </resultMap>
+
+    <select id="getStorages" resultMap="BaseResultMap">
+        select * from storage
+    </select>
+
+    <insert id="addStorage" parameterType="com.rancho.web.db.domain.Storage">
+        insert into storage (real_name,name,suffix,path,type,size) values (#{realName},#{name},#{suffix},#{path},#{type},#{size})
+    </insert>
+
+    <select id="getStorage" resultMap="BaseResultMap">
+        select * from storage where id=#{id}
+    </select>
+
+    <delete id="deleteStorage">
+        delete from storage where id = #{id}
+    </delete>
+</mapper>

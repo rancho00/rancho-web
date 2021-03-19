@@ -65,4 +65,8 @@
             #{id}
         </foreach>
     </delete>
+
+    <select id="getServer" parameterType="com.rancho.web.db.domain.Server">
+        select * from server where id =#{id}
+    </select>
 </mapper>

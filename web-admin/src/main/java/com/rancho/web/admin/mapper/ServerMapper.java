@@ -18,4 +18,6 @@ public interface ServerMapper {
     void updateServer(Server server);
 
     void deleteServer(@Param("ids") Integer[] ids);
+
+    Server getServer(@Param("id")Integer id);
 }

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rancho.web.admin.mapper.StorageConfigMapper">
+    <resultMap id="BaseResultMap" type="com.rancho.web.db.domain.StorageConfig">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="server_id" jdbcType="INTEGER" property="serverId" />
+        <result column="path" jdbcType="VARCHAR" property="path" />
+    </resultMap>
+
+    <select id="getStorageConfigWithServer" resultType="com.rancho.web.admin.domain.StorageConfigWithServer">
+        select
+        sc.id,
+        sc.server_id as serverId,
+        sc.path,
+        s.id as 'server.id',
+        s.account as 'server.account',
+        s.name as 'server.name',
+        s.password as 'server.password',
+        s.ip as 'server.ip',
+        s.port as 'server.port',
+        s.create_admin as 'server.createAdmin',
+        s.update_admin as 'server.updateAdmin',
+        s.create_time as 'server.createTime',
+        s.update_time as 'server.updateTime'
+        from storage_config sc join server s on sc.server_id=s.id
+    </select>
+
+    <select id="getStorageConfig" resultMap="BaseResultMap">
+        select * from storage_config
+    </select>
+
+    <update id="updateStorageConfig" parameterType="com.rancho.web.db.domain.StorageConfig">
+        update storage_config
+        <set>
+            <if test="serverId!=null">
+                server_id=#{serverId},
+            </if>
+            <if test="path!=null">
+                path=#{path}
+            </if>
+        </set>
+        where id =#{id}
+    </update>
+</mapper>

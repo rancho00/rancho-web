@@ -28,6 +28,7 @@ public class RestExceptionHandler {
      */
     @ExceptionHandler
     public ResponseEntity<CommonResult> handleException(Exception e) {
+        e.printStackTrace();
         log.error("全局异常-------->：{}",e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(CommonResult.error());
     }

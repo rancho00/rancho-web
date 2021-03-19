@@ -19,6 +19,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @Api(value = "服务器管理", tags = "服务器管理")
 @Controller
 @RequestMapping("/server")
@@ -35,6 +38,16 @@ public class ServerController {
     public ResponseEntity<CommonResult<PageInfo<Server>>> getServers(ServerParam serverParam, Page page) {
         PageInfo<Server> pageInfo= PageInfo.convertPage(serverService.getServers(serverParam,page));
         return ResponseEntity.ok(CommonResult.ok(pageInfo));
+    }
+
+    @Log("查询服务器")
+    @ApiOperation(value = "服务器列表")
+    @GetMapping("/options")
+    @ResponseBody
+    @PreAuthorize("hasAuthority('server:list')")
+    public ResponseEntity<CommonResult<Map<String,Object>>> getServerOptions() {
+        List<Map<String,Object>> serverOptions=serverService.getServerOptions();
+        return ResponseEntity.ok(CommonResult.ok(serverOptions));
     }
 
 

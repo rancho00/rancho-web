@@ -18,6 +18,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @Api(value = "服务管理", tags = "服务管理")
 @Controller
 @RequestMapping("/serve")
@@ -31,9 +34,19 @@ public class ServeController {
     @GetMapping
     @ResponseBody
     @PreAuthorize("hasAuthority('serve:list')")
-    public ResponseEntity<CommonResult<PageInfo<Serve>>> getServers(ServeParam serveParam, Page page) {
+    public ResponseEntity<CommonResult<PageInfo<Serve>>> getServes(ServeParam serveParam, Page page) {
         PageInfo<Serve> pageInfo= PageInfo.convertPage(serveService.getServes(serveParam,page));
         return ResponseEntity.ok(CommonResult.ok(pageInfo));
+    }
+
+    @Log("查询服务")
+    @ApiOperation(value = "服务列表")
+    @GetMapping("/options")
+    @ResponseBody
+    @PreAuthorize("hasAuthority('serve:list')")
+    public ResponseEntity<CommonResult<Map<String,Object>>> getServeOptions() {
+        List<Map<String,Object>> serveOptions=serveService.getServeOptions();
+        return ResponseEntity.ok(CommonResult.ok(serveOptions));
     }
 
 

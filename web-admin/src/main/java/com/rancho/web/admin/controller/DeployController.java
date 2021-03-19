@@ -64,25 +64,6 @@ public class DeployController {
         return ResponseEntity.ok(CommonResult.ok(pageInfo));
     }
 
-    @Log("查询服务器")
-    @ApiOperation(value = "服务器列表")
-    @GetMapping("/server")
-    @ResponseBody
-    @PreAuthorize("hasAuthority('server:list')")
-    public ResponseEntity<CommonResult<Map<String,Object>>> getServerOptions() {
-        List<Map<String,Object>> serverOptions=serverService.getServerOptions();
-        return ResponseEntity.ok(CommonResult.ok(serverOptions));
-    }
-
-    @Log("查询服务")
-    @ApiOperation(value = "服务列表")
-    @GetMapping("/serve")
-    @ResponseBody
-    @PreAuthorize("hasAuthority('serve:list')")
-    public ResponseEntity<CommonResult<Map<String,Object>>> getServeOptions() {
-        List<Map<String,Object>> serveOptions=serveService.getServeOptions();
-        return ResponseEntity.ok(CommonResult.ok(serveOptions));
-    }
 
     @Log("添加部署")
     @ApiOperation(value = "添加部署")
